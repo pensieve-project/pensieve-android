@@ -1,47 +1,37 @@
 package ru.hse.pensieve
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import ru.hse.pensieve.ui.theme.PensieveTheme
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import ru.hse.pensieve.api.*
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+    private lateinit var responseTextView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            PensieveTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+        setContentView(R.layout.activity_main)
+        responseTextView = findViewById(R.id.responseTextView)
+        fetchGreeting()
+    }
+
+    private fun fetchGreeting() {
+        Client.instance.getGreeting().enqueue(object : Callback<GreetingResponse> {
+            override fun onResponse(call: Call<GreetingResponse>, response: Response<GreetingResponse>) {
+                if (response.isSuccessful) {
+                    val body = response.body()?.message ?: "No response body"
+                    responseTextView.text = body
+                } else {
+                    responseTextView.text = "Failed to get response"
                 }
             }
-        }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PensieveTheme {
-        Greeting("Android")
+            override fun onFailure(call: Call<GreetingResponse>, t: Throwable) {
+                responseTextView.text = "Error: ${t.localizedMessage}"
+            }
+        })
     }
 }
