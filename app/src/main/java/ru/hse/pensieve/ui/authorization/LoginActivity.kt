@@ -1,3 +1,10 @@
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import ru.hse.pensieve.MainActivity
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -20,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
         observeViewModel()
     }
 
+    private fun setContentView(root: Any) {
+
+    }
+
     private fun validateInput(email: String, password: String): Boolean {
         return email.isNotEmpty() && password.isNotEmpty()
     }
@@ -36,4 +47,15 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         })
     }
+}
+
+class ActivityLoginBinding {
+    val root: Any = TODO()
+
+    companion object {
+        fun <LayoutInflater> inflate(layoutInflater: LayoutInflater): ActivityLoginBinding {
+
+        }
+    }
+
 }
