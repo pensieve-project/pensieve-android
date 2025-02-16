@@ -1,9 +1,13 @@
+package ru.hse.pensieve.ui.authorization
+
+import AuthViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.MainActivity
+import ru.hse.pensieve.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
 
@@ -12,7 +16,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityLoginBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
         binding.loginButton.setOnClickListener {
@@ -25,10 +31,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         observeViewModel()
-    }
-
-    private fun setContentView(root: Any) {
-
     }
 
     private fun validateInput(email: String, password: String): Boolean {
@@ -47,15 +49,4 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         })
     }
-}
-
-class ActivityLoginBinding {
-    val root: Any = TODO()
-
-    companion object {
-        fun <LayoutInflater> inflate(layoutInflater: LayoutInflater): ActivityLoginBinding {
-
-        }
-    }
-
 }

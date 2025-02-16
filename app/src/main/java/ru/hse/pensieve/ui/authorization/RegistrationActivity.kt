@@ -1,10 +1,13 @@
+package ru.hse.pensieve.ui.authorization
+
+import AuthViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.MainActivity
-import ru.hse.pensieve.databinding.ActivityRegistrationBinding // Импорт сгенерированного класса
+import ru.hse.pensieve.databinding.ActivityRegistrationBinding
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -14,13 +17,10 @@ class RegistrationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Инициализация ViewBinding
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
 
-        // Установка макета
         setContentView(binding.root)
 
-        // Обработка нажатия кнопки регистрации
         binding.registerButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val username = binding.usernameEditText.text.toString()
@@ -41,7 +41,6 @@ class RegistrationActivity : AppCompatActivity() {
     private fun observeViewModel() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
-                // Переход на главный экран
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
