@@ -9,16 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:hint="@string/email"
-        android:inputType="TODO" />
+        android:hint="@string/email" />
 
     <EditText
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:hint="@string/username"
-        android:inputType="TODO" />
+        android:hint="@string/username" />
 
     <EditText
         android:id="@+id/passwordEditText"
