@@ -1,20 +1,27 @@
 package ru.hse.pensieve
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.hse.pensieve.api.*
+import ru.hse.pensieve.api.Client
+import ru.hse.pensieve.api.GreetingResponse
+import ru.hse.pensieve.databinding.ActivityMainBinding
+import ru.hse.pensieve.ui.authorization.RegistrationActivity
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var responseTextView: TextView
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        responseTextView = findViewById(R.id.responseTextView)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.responseTextView.text = "Loading..."
         fetchGreeting()
     }
 
@@ -22,16 +29,27 @@ class MainActivity : AppCompatActivity() {
         Client.instance.getGreeting().enqueue(object : Callback<GreetingResponse> {
             override fun onResponse(call: Call<GreetingResponse>, response: Response<GreetingResponse>) {
                 if (response.isSuccessful) {
-                    val body = response.body()?.message ?: "No response body"
-                    responseTextView.text = body
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        goToRegistrationActivity()
+                    }, 1000)
                 } else {
-                    responseTextView.text = "Failed to get response"
+                    showError("Failed to get response")
                 }
             }
 
             override fun onFailure(call: Call<GreetingResponse>, t: Throwable) {
-                responseTextView.text = "Error: ${t.localizedMessage}"
+                showError("Error: ${t.localizedMessage}")
             }
         })
+    }
+
+    private fun goToRegistrationActivity() {
+        val intent = Intent(this, RegistrationActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun showError(message: String) {
+        binding.responseTextView.text = message
     }
 }

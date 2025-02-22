@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.MainActivity
 import ru.hse.pensieve.databinding.ActivityRegistrationBinding
+import ru.hse.pensieve.utils.Hashing
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -27,10 +28,14 @@ class RegistrationActivity : AppCompatActivity() {
             val password = binding.passwordEditText.text.toString()
 
             if (validateInput(email, username, password)) {
-                authViewModel.register(email, username, password)
+                val hashedPassword = Hashing.hashWithSha256(password)
+                authViewModel.register(email, username, hashedPassword)
             }
         }
-
+        binding.goToLoginButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
         observeViewModel()
     }
 

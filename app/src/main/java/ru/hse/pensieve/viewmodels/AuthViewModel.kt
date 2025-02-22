@@ -3,9 +3,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.hse.pensieve.repository.AuthRepositoryFake
 
 class AuthViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepositoryFake
 ) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
