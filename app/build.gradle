@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id 'org.jetbrains.kotlin.android' version '2.1.10'
     alias(libs.plugins.kotlin.compose)
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -34,13 +35,19 @@ android {
     buildFeatures {
         compose true
     }
+
+    sourceSets {
+        main {
+            java.srcDirs += 'build/generated/ksp'
+        }
+    }
 }
 
 dependencies {
 
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation("com.squareup.retrofit2:converter-jackson:2.1.0")
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation libs.retrofit
+    implementation(libs.converter.jackson)
+    implementation libs.material
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.lifecycle.runtime.ktx
@@ -51,6 +58,9 @@ dependencies {
     implementation libs.androidx.ui.tooling.preview
     implementation libs.androidx.material3
     implementation libs.androidx.appcompat
+    implementation libs.androidx.room.common
+    implementation libs.androidx.room.common.jvm
+    implementation libs.firebase.firestore.ktx
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -58,4 +68,9 @@ dependencies {
     androidTestImplementation libs.androidx.ui.test.junit4
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
+
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation libs.androidx.room.ktx
+    ksp "androidx.room:room-compiler:$room_version"
 }
