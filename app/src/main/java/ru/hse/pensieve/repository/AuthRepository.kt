@@ -1,18 +1,18 @@
 package ru.hse.pensieve.repository
 
-import LoginRequest
-import RegistrationRequest
-import User
+import ru.hse.pensieve.models.AuthenticationResponse
+import ru.hse.pensieve.models.LoginRequest
+import ru.hse.pensieve.models.RegistrationRequest
+import ru.hse.pensieve.api.Client
 
-class AuthRepository(
-    private val authApi: AuthApi
-) {
+class AuthRepository {
+    private val authApi = Client.instance
 
-    suspend fun login(request: LoginRequest): User {
-        return authApi.login(request)
+    suspend fun login(request: LoginRequest): AuthenticationResponse {
+        return authApi.login(request).await()
     }
 
-    suspend fun register(request: RegistrationRequest): User {
-        return authApi.register(request)
+    suspend fun register(request: RegistrationRequest): AuthenticationResponse {
+        return authApi.register(request).await()
     }
 }

@@ -33,6 +33,7 @@
 
         <activity
             android:name=".ui.authorization.RegistrationActivity"
+            android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
     </application>

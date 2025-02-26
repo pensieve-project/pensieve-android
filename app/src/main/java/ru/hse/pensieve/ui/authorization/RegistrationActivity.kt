@@ -1,6 +1,6 @@
 package ru.hse.pensieve.ui.authorization
 
-import AuthViewModel
+import ru.hse.pensieve.viewmodels.AuthViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
