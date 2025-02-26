@@ -1,6 +1,6 @@
 package ru.hse.pensieve.ui.authorization
 
-import AuthViewModel
+import ru.hse.pensieve.viewmodels.AuthViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -46,7 +46,7 @@ class RegistrationActivity : AppCompatActivity() {
     private fun observeViewModel() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
         })
