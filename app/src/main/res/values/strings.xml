@@ -5,4 +5,7 @@
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="sign_in">Sign in</string>
+    <string name="already_registered_login">Already registered? Login</string>
+    <string name="not_registered_yet_register">Not registered yet? Register</string>
+    <string name="welcome_to_npensieve">Welcome to\nPensieve</string>
 </resources>
