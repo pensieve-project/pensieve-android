@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:name=".MyApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -34,6 +35,11 @@
 
         <activity
             android:name=".ui.authorization.RegistrationActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".ui.profile.ProfileActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
