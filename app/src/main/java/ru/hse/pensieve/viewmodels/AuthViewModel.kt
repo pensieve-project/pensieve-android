@@ -30,7 +30,7 @@ class AuthViewModel: ViewModel() {
         }
     }
 
-    fun register(email: String, username: String, password: String) {
+    fun register(username: String, email: String, password: String) {
         viewModelScope.launch {
             try {
                 val user = authRepository.register(RegistrationRequest(username, email, password))
