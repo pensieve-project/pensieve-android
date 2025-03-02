@@ -6,6 +6,8 @@ import java.util.UUID
 data class AuthenticationResponse(
     @JsonProperty("id") val id: UUID,
     @JsonProperty("username") val username: String,
+    @JsonProperty("accessToken") val accessToken: String,
+    @JsonProperty("refreshToken") val refreshToken: String,
 ) {
-    constructor() : this(UUID.randomUUID(), "")
+    constructor() : this(UUID.randomUUID(), "", "", "")
 }

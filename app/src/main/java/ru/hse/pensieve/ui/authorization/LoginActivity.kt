@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.MainActivity
 import ru.hse.pensieve.databinding.ActivityLoginBinding
+import ru.hse.pensieve.ui.postcreation.PostCreationActivity
 import ru.hse.pensieve.utils.Hashing
 
 class LoginActivity : AppCompatActivity() {
@@ -44,7 +45,8 @@ class LoginActivity : AppCompatActivity() {
     private fun observeViewModel() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
-                // перейти в профиль
+                val intent = Intent(this, PostCreationActivity::class.java)
+                startActivity(intent)
                 finish()
             }
         })

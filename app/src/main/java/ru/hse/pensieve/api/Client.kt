@@ -13,9 +13,10 @@ object Client {
 
     private const val BASE_URL = "http://10.0.2.2:8080/"
     private var retrofit: Retrofit? = null
+    private var tokenManager: TokenManager? = null
 
     fun init(context: Context) {
-        val tokenManager = TokenManager(context.applicationContext)
+        tokenManager = TokenManager(context.applicationContext)
 
         val refreshRetrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -25,8 +26,8 @@ object Client {
         val refreshApi = refreshRetrofit.create(RefreshApiService::class.java)
 
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(tokenManager))
-            .authenticator(TokenAuthenticator(tokenManager, refreshApi))
+            .addInterceptor(AuthInterceptor(tokenManager!!))
+            .authenticator(TokenAuthenticator(tokenManager!!, refreshApi))
             .build()
 
         retrofit = Retrofit.Builder()
@@ -35,6 +36,10 @@ object Client {
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(okHttpClient)
             .build()
+    }
+
+    fun getTokenManagerInstance(): TokenManager {
+        return tokenManager!!
     }
 
     fun <T> getInstanceOfService(type: Class<T>): T {

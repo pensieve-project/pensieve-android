@@ -8,12 +8,19 @@ import ru.hse.pensieve.api.Client
 
 class AuthRepository {
     private val authApi = Client.getInstanceOfService(AuthApiService::class.java)
+    private val tokenManager = Client.getTokenManagerInstance()
 
     suspend fun login(request: LoginRequest): AuthenticationResponse {
-        return authApi.login(request).await()
+        val response = authApi.login(request).await()
+        tokenManager.saveAccessToken(response.accessToken)
+        tokenManager.saveRefreshToken(response.refreshToken)
+        return response
     }
 
     suspend fun register(request: RegistrationRequest): AuthenticationResponse {
-        return authApi.register(request).await()
+        val response = authApi.register(request).await()
+        tokenManager.saveAccessToken(response.accessToken)
+        tokenManager.saveRefreshToken(response.refreshToken)
+        return response
     }
 }

@@ -1,5 +1,6 @@
 package ru.hse.pensieve.models;
 
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -14,22 +15,33 @@ class TokenAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         synchronized(this) {
-            val newAccess = runBlocking {
+            val refreshToken = runBlocking { tokenManager.refreshToken.first() }
+            if (refreshToken == null) {
+                return null
+            }
+
+            val newTokens = runBlocking {
                 try {
-                    refreshApi.getNewAccess()
+                    refreshApi.getNewTokens(refreshToken).await()
                 } catch (e: Exception) {
                     null
                 }
-            } ?: return null
-
-            runBlocking {
-                tokenManager.saveAccessToken(newAccess)
             }
 
-            println(tokenManager.accessToken)
+            if (newTokens == null || newTokens.refreshToken == null || newTokens.accessToken == null) {
+                runBlocking {
+                    tokenManager.deleteTokens()
+                }
+                return null
+            }
+
+            runBlocking {
+                tokenManager.saveAccessToken(newTokens.accessToken)
+                tokenManager.saveRefreshToken(newTokens.refreshToken)
+            }
 
             return response.request().newBuilder()
-                .header("Authorization", "Bearer $newAccess")
+                .header("Authorization", "Bearer ${newTokens.accessToken}")
                 .build()
         }
     }
