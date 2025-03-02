@@ -1,40 +1,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp"
+    android:gravity="center">
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:hint="@string/email" />
+    <TextView
+        android:text="@string/welcome_to_npensieve"
+        android:layout_height="120dp"
+        android:layout_width="320dp"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:textColor="@color/brown950"
+        android:gravity="center"
+        />
 
     <EditText
         android:id="@+id/usernameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/EditTextStyle"
         android:autofillHints=""
         android:hint="@string/username" />
 
     <EditText
+        android:id="@+id/emailEditText"
+        style="@style/EditTextStyle"
+        android:autofillHints=""
+        android:hint="@string/email" />
+
+    <EditText
         android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/EditTextStyle"
         android:autofillHints=""
         android:hint="@string/password"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ActionButtonStyle"
         android:text="@string/register" />
 
-    <Button
-        android:id="@+id/goToLoginButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Already registered? Login" />
+    <TextView
+        android:id="@+id/goToLoginText"
+        android:text="@string/already_registered_login"
+        android:layout_height="40dp"
+        android:layout_width="320dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/brown950"
+        android:gravity="center"
+        />
 </LinearLayout>
