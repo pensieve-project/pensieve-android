@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Pensieve" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+    <style name="Theme.Pensieve" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brown950</item>
+        <item name="colorOnPrimary">@color/beige50</item>
+        <item name="colorSecondary">@color/orange400</item>
+        <item name="colorOnSecondary">@color/brown950</item>
+
+        <item name="android:windowBackground">@color/almost_white</item>
+    </style>
+
+    <style name="ActionButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/rounded_brown_button</item>
+        <item name="android:textColor">@color/beige50</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="EditTextStyle">
+        <item name="android:layout_width">320dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:textColor">@color/brown950</item>
+        <item name="android:textColorHint">@color/brown950_transparent</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:backgroundTint">@null</item>
+    </style>
+
 </resources>
