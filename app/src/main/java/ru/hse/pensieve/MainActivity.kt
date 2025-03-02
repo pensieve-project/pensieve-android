@@ -1,37 +1,30 @@
 package ru.hse.pensieve
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.hse.pensieve.api.*
+import ru.hse.pensieve.databinding.ActivityMainBinding
+import ru.hse.pensieve.ui.authorization.RegistrationActivity
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var responseTextView: TextView
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        responseTextView = findViewById(R.id.responseTextView)
-        fetchGreeting()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.responseTextView.text = "Loading..."
+        goToRegistrationActivity()
     }
 
-    private fun fetchGreeting() {
-        Client.instance.getGreeting().enqueue(object : Callback<GreetingResponse> {
-            override fun onResponse(call: Call<GreetingResponse>, response: Response<GreetingResponse>) {
-                if (response.isSuccessful) {
-                    val body = response.body()?.message ?: "No response body"
-                    responseTextView.text = body
-                } else {
-                    responseTextView.text = "Failed to get response"
-                }
-            }
+    private fun goToRegistrationActivity() {
+        val intent = Intent(this, RegistrationActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
-            override fun onFailure(call: Call<GreetingResponse>, t: Throwable) {
-                responseTextView.text = "Error: ${t.localizedMessage}"
-            }
-        })
+    private fun showError(message: String) {
+        binding.responseTextView.text = message
     }
 }
