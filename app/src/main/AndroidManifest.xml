@@ -7,6 +7,7 @@
 
     <application
         android:name=".MyApplication"
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,8 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pensieve"
-        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,14 +25,15 @@
             android:theme="@style/Theme.Pensieve">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.authorization.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
         <activity
             android:name=".ui.authorization.RegistrationActivity"
             android:exported="true"
@@ -39,6 +41,12 @@
         <activity
             android:name=".ui.postcreation.PostCreationActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
     </application>
 
 </manifest>
