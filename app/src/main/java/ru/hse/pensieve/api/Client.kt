@@ -5,9 +5,10 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import ru.hse.pensieve.models.AuthInterceptor
-import ru.hse.pensieve.models.TokenAuthenticator
-import ru.hse.pensieve.models.TokenManager
+import ru.hse.pensieve.authentication.route.RefreshService
+import ru.hse.pensieve.authentication.models.tokens.AuthInterceptor
+import ru.hse.pensieve.authentication.models.tokens.TokenAuthenticator
+import ru.hse.pensieve.authentication.models.TokenManager
 
 object Client {
 
@@ -23,7 +24,7 @@ object Client {
             .addConverterFactory(JacksonConverterFactory.create())
             .build()
 
-        val refreshApi = refreshRetrofit.create(RefreshApiService::class.java)
+        val refreshApi = refreshRetrofit.create(RefreshService::class.java)
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(tokenManager!!))

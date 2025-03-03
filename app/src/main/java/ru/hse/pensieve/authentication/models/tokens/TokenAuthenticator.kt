@@ -1,4 +1,4 @@
-package ru.hse.pensieve.models;
+package ru.hse.pensieve.authentication.models.tokens;
 
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -6,11 +6,12 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import ru.hse.pensieve.api.RefreshApiService
+import ru.hse.pensieve.authentication.models.TokenManager
+import ru.hse.pensieve.authentication.route.RefreshService
 
 class TokenAuthenticator(
     private val tokenManager: TokenManager,
-    private val refreshApi: RefreshApiService
+    private val refreshApi: RefreshService
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {

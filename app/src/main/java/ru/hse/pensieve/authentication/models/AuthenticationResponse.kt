@@ -1,4 +1,4 @@
-package ru.hse.pensieve.models
+package ru.hse.pensieve.authentication.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.UUID

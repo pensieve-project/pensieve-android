@@ -1,4 +1,4 @@
-package ru.hse.pensieve.models;
+package ru.hse.pensieve.authentication.models;
 
 import android.content.Context
 import androidx.datastore.preferences.core.stringPreferencesKey
