@@ -1,14 +1,14 @@
-package ru.hse.pensieve.viewmodels
+package ru.hse.pensieve.authentication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.hse.pensieve.models.AuthenticationResponse
-import ru.hse.pensieve.models.LoginRequest
-import ru.hse.pensieve.models.RegistrationRequest
-import ru.hse.pensieve.repository.AuthRepository
+import ru.hse.pensieve.authentication.models.AuthenticationResponse
+import ru.hse.pensieve.authentication.models.LoginRequest
+import ru.hse.pensieve.authentication.models.RegistrationRequest
+import ru.hse.pensieve.authentication.repository.AuthRepository
 
 class AuthViewModel: ViewModel() {
     private val authRepository = AuthRepository()
