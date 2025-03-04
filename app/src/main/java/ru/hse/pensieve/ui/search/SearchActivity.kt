@@ -1,17 +1,18 @@
-package ru.hse.pensieve.ui.profile
+package ru.hse.pensieve.ui.search
 
 import android.os.Bundle
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.R
-import ru.hse.pensieve.databinding.ActivityProfileBinding
+import ru.hse.pensieve.databinding.ActivitySearchBinding
 import ru.hse.pensieve.ui.ToolbarActivity
 
-class ProfileActivity :  ToolbarActivity() {
-    private lateinit var binding: ActivityProfileBinding
+class SearchActivity :  ToolbarActivity() {
+    private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.root.findViewById(R.id.my_toolbar))
@@ -24,7 +25,7 @@ class ProfileActivity :  ToolbarActivity() {
             binding.root.findViewById<ImageButton>(R.id.button5)
         )
         setupButtons(buttons, defaultIcons, selectedIcons, -1)
-        val button5 = binding.root.findViewById<ImageButton>(R.id.button5)
-        button5.setImageResource(R.drawable.person_fill1)
+        val button2 = binding.root.findViewById<ImageButton>(R.id.button2)
+        button2.setImageResource(R.drawable.search_fill)
     }
 }
