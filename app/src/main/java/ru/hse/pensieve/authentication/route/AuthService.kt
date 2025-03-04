@@ -1,14 +1,14 @@
-package ru.hse.pensieve.api
+package ru.hse.pensieve.authentication.route
 
-import ru.hse.pensieve.models.LoginRequest
-import ru.hse.pensieve.models.RegistrationRequest
-import ru.hse.pensieve.models.AuthenticationResponse
+import ru.hse.pensieve.authentication.models.LoginRequest
+import ru.hse.pensieve.authentication.models.RegistrationRequest
+import ru.hse.pensieve.authentication.models.AuthenticationResponse
 
 import kotlinx.coroutines.Deferred
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface AuthApiService {
+interface AuthService {
     @POST("/auth/register")
     fun register(@Body request: RegistrationRequest): Deferred<AuthenticationResponse>
 
