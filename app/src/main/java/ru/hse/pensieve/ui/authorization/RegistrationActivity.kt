@@ -1,12 +1,11 @@
 package ru.hse.pensieve.ui.authorization
 
-import ru.hse.pensieve.viewmodels.AuthViewModel
+import ru.hse.pensieve.authentication.AuthViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import ru.hse.pensieve.MainActivity
 import ru.hse.pensieve.databinding.ActivityRegistrationBinding
 import ru.hse.pensieve.ui.profile.ProfileActivity
 import ru.hse.pensieve.utils.Hashing
