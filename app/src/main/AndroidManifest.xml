@@ -47,6 +47,21 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".ui.feed.FeedActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".ui.favourites.FavouritesActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
     </application>
 
 </manifest>

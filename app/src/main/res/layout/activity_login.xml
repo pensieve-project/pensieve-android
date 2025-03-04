@@ -12,8 +12,7 @@
         android:textSize="40sp"
         android:textStyle="bold"
         android:textColor="@color/brown950"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 
     <EditText
         android:id="@+id/emailEditText"
@@ -39,6 +38,5 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/brown950"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 </LinearLayout>
