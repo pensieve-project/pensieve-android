@@ -51,6 +51,30 @@
             android:layout_width="170dp"
             android:layout_height="wrap_content"/>
 
+        <FrameLayout
+            android:id="@+id/photo_container"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:background="@drawable/edittext_background"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/img_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/img_camera_icon"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/ic_camera"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
     </LinearLayout>
 
 </LinearLayout>

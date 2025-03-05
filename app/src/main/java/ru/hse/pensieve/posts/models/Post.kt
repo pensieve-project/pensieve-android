@@ -14,8 +14,9 @@ class Post(
     @JsonProperty("themeId") themeId: UUID?,
     @JsonProperty("authorId") authorId: UUID?,
     @JsonProperty("postId") postId: UUID?,
+    @JsonProperty("photo") photo: ByteArray?,
     @JsonProperty("text") text: String?,
     @JsonProperty("timeStamp") timeStamp: Instant?,
     @JsonProperty("likesCount") likesCount: Int?) {
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null)
 }

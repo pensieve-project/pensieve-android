@@ -1,13 +1,20 @@
 package ru.hse.pensieve.ui.postcreation
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.FragmentResultBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class ResultFragment : Fragment() {
 
@@ -32,6 +39,7 @@ class ResultFragment : Fragment() {
         setupButtons()
         updateNavigationButtons()
         fillTextLables()
+        setPhoto()
     }
 
     private fun setupButtons() {
@@ -44,8 +52,10 @@ class ResultFragment : Fragment() {
         }
 
         binding.btnPublish.setOnClickListener {
-            viewModel.createPost()
-            requireActivity().finish()
+            lifecycleScope.launch {
+                viewModel.createPost(uriToFile(viewModel.postPhoto.value!!))
+                requireActivity().finish()
+            }
         }
     }
 
@@ -56,6 +66,24 @@ class ResultFragment : Fragment() {
     private fun fillTextLables() {
         binding.themeName.setText(viewModel.postThemeTitle.value)
         binding.description.setText(viewModel.postText.value)
+    }
+
+    private fun setPhoto() {
+        binding.imgPhoto.setImageURI(viewModel.postPhoto.value)
+    }
+
+    private fun uriToFile(uri: Uri): File {
+        val file = File(requireContext().cacheDir, "photo_${System.currentTimeMillis()}.jpg")
+        try {
+            requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(file).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+        } catch (e: IOException) {
+            println("Exception: " + e.message)
+        }
+        return file
     }
 
     override fun onDestroyView() {

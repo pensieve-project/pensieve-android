@@ -74,8 +74,6 @@ class ThemesFragment : Fragment() {
         binding.btnNext.setOnClickListener {
             postViewModel.postTheme.value = selectedTheme
             postViewModel.postThemeTitle.value = selectedTheme.title
-            println(postViewModel.postTheme.value)
-            println(postViewModel.postThemeTitle.value)
             (requireActivity() as CreatePostActivity).goToChooseThemeFragment()
         }
 
