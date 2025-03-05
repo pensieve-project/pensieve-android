@@ -8,7 +8,7 @@ import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.posts.models.PostRequest
 import java.util.UUID
 
-interface PostApiService {
+interface PostService {
     @POST("/posts")
     fun createPost(@Body request: PostRequest): Deferred<Post>
 
