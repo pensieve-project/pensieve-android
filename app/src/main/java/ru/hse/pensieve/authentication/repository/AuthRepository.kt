@@ -1,13 +1,13 @@
-package ru.hse.pensieve.repository
+package ru.hse.pensieve.authentication.repository
 
-import ru.hse.pensieve.api.AuthApiService
-import ru.hse.pensieve.models.AuthenticationResponse
-import ru.hse.pensieve.models.LoginRequest
-import ru.hse.pensieve.models.RegistrationRequest
+import ru.hse.pensieve.authentication.models.AuthenticationResponse
+import ru.hse.pensieve.authentication.models.LoginRequest
+import ru.hse.pensieve.authentication.models.RegistrationRequest
 import ru.hse.pensieve.api.Client
+import ru.hse.pensieve.authentication.route.AuthService
 
 class AuthRepository {
-    private val authApi = Client.getInstanceOfService(AuthApiService::class.java)
+    private val authApi = Client.getInstanceOfService(AuthService::class.java)
     private val tokenManager = Client.getTokenManagerInstance()
 
     suspend fun login(request: LoginRequest): AuthenticationResponse {

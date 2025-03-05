@@ -11,7 +11,7 @@ import java.util.UUID
 @Getter
 @Setter
 class Post(
-    @JsonProperty("threadId") threadId: UUID?,
+    @JsonProperty("themeId") themeId: UUID?,
     @JsonProperty("authorId") authorId: UUID?,
     @JsonProperty("postId") postId: UUID?,
     @JsonProperty("text") text: String?,

@@ -1,4 +1,4 @@
-package ru.hse.pensieve.models
+package ru.hse.pensieve.authentication.models
 
 data class RegistrationRequest(
     val username: String,

@@ -10,15 +10,15 @@ class PostRepository {
     private val postApi = Client.getInstanceOfService(PostApiService::class.java)
     private val userId: UUID? = UUID.fromString("a4956bff-2362-4ac7-88c1-fc4fdee8810f")
 
-    suspend fun createPost(text: String, threadId: UUID): Post {
-        return postApi.createPost(PostRequest(text, userId, threadId)).await()
+    suspend fun createPost(text: String, themeId: UUID): Post {
+        return postApi.createPost(PostRequest(text, userId, themeId)).await()
     }
 
     suspend fun getPostsByAuthor(authorId: UUID): List<Post> {
         return postApi.getPostsByAuthor(authorId).await()
     }
 
-    suspend fun getPostsByThread(threadId: UUID): List<Post> {
-        return postApi.getPostsByThread(threadId).await()
+    suspend fun getPostsByTheme(themeId: UUID): List<Post> {
+        return postApi.getPostsByTheme(themeId).await()
     }
 }

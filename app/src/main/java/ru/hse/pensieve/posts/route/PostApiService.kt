@@ -1,8 +1,6 @@
 package ru.hse.pensieve.posts.route
 
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -17,6 +15,6 @@ interface PostApiService {
     @GET("/by-author")
     fun getPostsByAuthor(authorId: UUID?): Deferred<List<Post>>
 
-    @GET("/by-thread")
-    fun getPostsByThread(threadId: UUID?): Deferred<List<Post>>
+    @GET("/by-theme")
+    fun getPostsByTheme(themeId: UUID?): Deferred<List<Post>>
 }
