@@ -7,5 +7,5 @@ data class Theme(
     val themeId: UUID? = null,
     val authorId: UUID? = null,
     val title: String? = null,
-    val timeStamp: Instant? = null,) {
-}
+    val timeStamp: Instant? = null
+)
