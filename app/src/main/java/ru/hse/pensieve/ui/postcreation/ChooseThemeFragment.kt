@@ -78,6 +78,7 @@ class ChooseThemeFragment : Fragment() {
         binding.edittextNewTheme.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 binding.btnNext.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+                viewModel.postThemeTitle.value = s.toString()
                 if (isUserInput) {
                     viewModel.postTheme.value = null
                 }
