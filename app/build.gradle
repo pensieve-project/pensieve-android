@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id 'org.jetbrains.kotlin.android' version '2.1.10'
     alias(libs.plugins.kotlin.compose)
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -40,10 +41,14 @@ android {
     viewBinding {
         enabled = true
     }
+    sourceSets {
+        main {
+            java.srcDirs += 'build/generated/ksp'
+        }
+    }
 }
 
 dependencies {
-
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
     compileOnly 'org.projectlombok:lombok:1.18.30'
@@ -69,6 +74,9 @@ dependencies {
     implementation libs.androidx.lifecycle.viewmodel.android
     implementation libs.transport.runtime
     implementation libs.play.services.identity.credentials
+    implementation libs.androidx.room.common
+    implementation libs.androidx.room.common.jvm
+    implementation libs.firebase.firestore.ktx
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -77,6 +85,11 @@ dependencies {
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
     implementation libs.retrofit2.kotlin.coroutines.adapter
+
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation libs.androidx.room.ktx
+    ksp "androidx.room:room-compiler:$room_version"
 }
 
 kapt {

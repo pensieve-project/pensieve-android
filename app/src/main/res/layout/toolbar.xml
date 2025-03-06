@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/orange400"
-            android:src="@drawable/person_light1" />
+            android:src="@drawable/person_light" />
 
     </LinearLayout>
 
