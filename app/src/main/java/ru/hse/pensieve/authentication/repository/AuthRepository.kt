@@ -12,15 +12,15 @@ class AuthRepository {
 
     suspend fun login(request: LoginRequest): AuthenticationResponse {
         val response = authApi.login(request).await()
-        tokenManager.saveAccessToken(response.accessToken)
-        tokenManager.saveRefreshToken(response.refreshToken)
+        tokenManager.saveAccessToken(response.accessToken!!)
+        tokenManager.saveRefreshToken(response.refreshToken!!)
         return response
     }
 
     suspend fun register(request: RegistrationRequest): AuthenticationResponse {
         val response = authApi.register(request).await()
-        tokenManager.saveAccessToken(response.accessToken)
-        tokenManager.saveRefreshToken(response.refreshToken)
+        tokenManager.saveAccessToken(response.accessToken!!)
+        tokenManager.saveRefreshToken(response.refreshToken!!)
         return response
     }
 }

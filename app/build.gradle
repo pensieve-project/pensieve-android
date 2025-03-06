@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "ru.hse.pensieve"
-        minSdk 24
+        minSdk 34
         targetSdk 35
         versionCode 1
         versionName "1.0"
@@ -43,10 +43,17 @@ android {
         enabled = true
     }
     sourceSets {
-        main {
-            java.srcDirs += 'build/generated/ksp'
+        debug {
+            java.srcDirs += "build/generated/ksp/debug/kotlin"
+        }
+        release {
+            java.srcDirs += "build/generated/ksp/release/kotlin"
         }
     }
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
 }
 
 dependencies {

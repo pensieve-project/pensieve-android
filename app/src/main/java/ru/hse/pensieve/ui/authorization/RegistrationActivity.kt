@@ -87,7 +87,7 @@ class RegistrationActivity : AppCompatActivity() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
                 lifecycleScope.launch {
-                    userRepository.insertUser(User(user.id, user.username, null))
+                    userRepository.insertUser(User(user.id!!, user.username!!, null))
                 }
                 startActivity(Intent(this, ProfileActivity::class.java))
                 finish()
