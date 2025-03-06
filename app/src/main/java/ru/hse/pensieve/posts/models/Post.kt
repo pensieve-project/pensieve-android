@@ -1,7 +1,5 @@
 package ru.hse.pensieve.posts.models
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Getter
 import lombok.Setter
