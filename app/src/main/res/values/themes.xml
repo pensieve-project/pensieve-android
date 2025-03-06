@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.Pensieve" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
         <item name="colorPrimary">@color/brown950</item>
         <item name="colorOnPrimary">@color/beige50</item>
         <item name="colorSecondary">@color/orange400</item>
