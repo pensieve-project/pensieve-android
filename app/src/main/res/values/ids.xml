@@ -5,4 +5,5 @@
     <item name="loginButton" type="id" />
     <item name="registerButton" type="id" />
     <item name="usernameEditText" type="id" />
+    <item name="toolbar" type="id" />
 </resources>
