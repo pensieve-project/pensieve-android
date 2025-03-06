@@ -9,6 +9,12 @@ import ru.hse.pensieve.authentication.route.RefreshService
 import ru.hse.pensieve.authentication.models.tokens.AuthInterceptor
 import ru.hse.pensieve.authentication.models.tokens.TokenAuthenticator
 import ru.hse.pensieve.authentication.models.TokenManager
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+
+object JacksonConfig {
+    val objectMapper: ObjectMapper = ObjectMapper().registerModule(JavaTimeModule())
+}
 
 object Client {
 
@@ -33,7 +39,7 @@ object Client {
 
         retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(JacksonConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(JacksonConfig.objectMapper))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(okHttpClient)
             .build()

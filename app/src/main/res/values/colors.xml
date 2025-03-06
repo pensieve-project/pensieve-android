@@ -13,4 +13,9 @@
     <color name="brown900">#ff672d27</color>
     <color name="brown950">#ff371513</color>
     <color name="brown950_transparent">#80371513</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
 </resources>

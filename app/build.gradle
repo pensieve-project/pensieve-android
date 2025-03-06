@@ -36,6 +36,7 @@ android {
     }
     buildFeatures {
         compose true
+        viewBinding true
     }
 
     viewBinding {
@@ -49,6 +50,10 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
+
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
     compileOnly 'org.projectlombok:lombok:1.18.30'
