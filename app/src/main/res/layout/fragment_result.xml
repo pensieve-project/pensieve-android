@@ -30,50 +30,61 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
-        android:padding="25dp">
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/theme_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Theme name"
-            android:textColor="@color/brown950"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            />
+            android:orientation="vertical"
+            android:padding="25dp">
 
-        <ImageView
-            android:id="@+id/img_photo"
-            android:layout_width="300dp"
-            android:layout_height="400dp"
-            android:layout_marginTop="10dp"
-            android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/theme_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Theme name"
+                android:textColor="@color/brown950"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Some text"
-            android:textColor="@color/brown950"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center">
 
-        <Button
-            android:id="@+id/btn_publish"
-            style="@style/ActionButtonStyle"
-            android:text="Publish"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"/>
+                <ImageView
+                    android:id="@+id/img_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"/>
+            </FrameLayout>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Some text"
+                android:textColor="@color/brown950"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:id="@+id/btn_publish"
+                style="@style/ActionButtonStyle"
+                android:text="Publish"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"/>
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
