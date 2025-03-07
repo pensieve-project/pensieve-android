@@ -1,5 +1,9 @@
-package ru.hse.pensieve.ui.search
+package ru.hse.pensieve.ui.themes
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -7,6 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.hse.pensieve.databinding.ThemeItemThemeBinding
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.R
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class ThemeAdapter(
     private val themes: List<Theme>,
@@ -66,8 +74,25 @@ class ThemeAdapter(
     class ThemeViewHolder(val binding: ThemeItemThemeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(theme: Theme) {
             binding.titleTextView.text = theme.title
-            binding.authorTextView.text = "Author: ${theme.authorId.toString()}" // change to username
-            binding.timeStampTextView.text = "Created: ${theme.timeStamp.toString()}" /// change format
+            binding.authorTextView.text = formatBoldText("Author: ", theme.authorId.toString())
+            binding.timeStampTextView.text = formatBoldText("Created: ", formatInstant(theme.timeStamp!!))
+        }
+
+        private fun formatInstant(instant: Instant): String {
+            val formatter = DateTimeFormatter.ofPattern("MM.dd.yyyy", Locale.getDefault())
+                .withZone(ZoneId.systemDefault())
+            return formatter.format(instant)
+        }
+
+        private fun formatBoldText(boldPart: String, normalPart: String): SpannableString {
+            val spannable = SpannableString("$boldPart$normalPart")
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                boldPart.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            return spannable
         }
     }
 }

@@ -12,6 +12,7 @@ import ru.hse.pensieve.databinding.FragmentThemesBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.themes.models.Theme
+import ru.hse.pensieve.ui.themes.ThemeAdapter
 
 class ThemesFragment : Fragment() {
 
