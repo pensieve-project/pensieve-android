@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.1"
+converterJackson = "2.1.0"
 kotlin = "2.0.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -13,9 +14,19 @@ lifecycleViewmodelAndroid = "2.8.7"
 retrofit2KotlinCoroutinesAdapter = "0.9.2"
 transportRuntime = "4.0.0"
 playServicesIdentityCredentials = "16.0.0-alpha05"
+activity = "1.10.1"
+constraintlayout = "2.1.4"
+material = "1.12.0"
+retrofit = "2.9.0"
+roomCommon = "2.6.1"
+roomCommonJvm = "2.7.0-beta01"
+firebaseFirestoreKtx = "25.1.2"
+roomKtx = "2.7.0-beta01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+converter-jackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "converterJackson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -34,6 +45,13 @@ androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "l
 retrofit2-kotlin-coroutines-adapter = { module = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter", version.ref = "retrofit2KotlinCoroutinesAdapter" }
 transport-runtime = { group = "com.google.android.datatransport", name = "transport-runtime", version.ref = "transportRuntime" }
 play-services-identity-credentials = { group = "com.google.android.gms", name = "play-services-identity-credentials", version.ref = "playServicesIdentityCredentials" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
