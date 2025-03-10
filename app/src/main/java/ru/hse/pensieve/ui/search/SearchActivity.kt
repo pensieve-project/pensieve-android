@@ -1,17 +1,14 @@
 package ru.hse.pensieve.ui.search
 
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageButton
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivitySearchBinding
 import ru.hse.pensieve.themes.ThemesViewModel
-import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.ui.ToolbarActivity
-import ru.hse.pensieve.ui.postcreation.ThemeAdapter
+import ru.hse.pensieve.ui.themes.ThemeAdapter
 
 class SearchActivity :  ToolbarActivity() {
     private lateinit var binding: ActivitySearchBinding
