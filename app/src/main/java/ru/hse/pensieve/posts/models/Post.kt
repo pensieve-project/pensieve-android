@@ -10,5 +10,6 @@ data class Post(
     val photo: ByteArray? = null,
     val text: String? = null,
     val timeStamp: Instant? = null,
-    val likesCount: Int? = null
+    val likesCount: Int? = null,
+    val commentsCount: Int? = null
 )
