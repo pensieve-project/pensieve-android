@@ -20,7 +20,7 @@ class ThemesViewModel: ViewModel() {
             try {
                 themeRepository.createTheme(title)
             } catch (e: Exception) {
-                println(e.message)
+                println("Exception: ${e.message}")
             }
         }
     }
@@ -30,9 +30,19 @@ class ThemesViewModel: ViewModel() {
             try {
                 val themes = themeRepository.getAllThemes()
                 _themes.value = themes
-                println("themes size: " + themes.size)
             } catch (e: Exception) {
-                println(e.message)
+                println("Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun searchThemes(query: String) {
+        viewModelScope.launch {
+            try {
+                val themes = themeRepository.searchThemes(query)
+                _themes.value = themes
+            } catch (e: Exception) {
+                println("Exception: ${e.message}")
             }
         }
     }

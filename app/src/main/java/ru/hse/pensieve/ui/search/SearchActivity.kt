@@ -3,6 +3,7 @@ package ru.hse.pensieve.ui.search
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivitySearchBinding
@@ -23,6 +24,7 @@ class SearchActivity :  ToolbarActivity() {
 
         setupToolBar()
         setupRecyclerView()
+        setupSearchView()
     }
 
     private fun setupRecyclerView() {
@@ -43,6 +45,29 @@ class SearchActivity :  ToolbarActivity() {
         })
 
         viewModel.getAllThemes()
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    viewModel.searchThemes(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    viewModel.searchThemes(it)
+                }
+                return true
+            }
+        })
+
+        binding.searchView.setOnCloseListener {
+            viewModel.getAllThemes()
+            false
+        }
     }
 
     private fun setupToolBar() {
