@@ -19,8 +19,8 @@ import java.util.UUID
 
 
 class PostRepository {
-    private val postApi = Client.getInstanceOfService(PostService::class.java)
-    private val themesApi = Client.getInstanceOfService(ThemeService::class.java)
+    private val postService = Client.getInstanceOfService(PostService::class.java)
+    private val themesService = Client.getInstanceOfService(ThemeService::class.java)
     private val userId: UUID = UserPreferences.getUserId()!!
 
     suspend fun createPostInExistingTheme(text: String, photo: File, themeId: UUID): Post {
@@ -54,7 +54,7 @@ class PostRepository {
     suspend fun getPostsByAuthor(authorId: UUID): List<Post> {
         return try {
             println("Sending request for authorId: $authorId")
-            val response = postApi.getPostsByAuthor(authorId).await()
+            val response = postService.getPostsByAuthor(authorId).await()
             println("Response received: $response")
             response
         } catch (e: Exception) {
