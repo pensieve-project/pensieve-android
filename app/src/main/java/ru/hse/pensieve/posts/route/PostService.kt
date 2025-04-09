@@ -10,10 +10,13 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
+import ru.hse.pensieve.api.Client
 import ru.hse.pensieve.posts.models.Comment
 import ru.hse.pensieve.posts.models.CommentRequest
 import ru.hse.pensieve.posts.models.Like
 import ru.hse.pensieve.posts.models.Post
+import ru.hse.pensieve.room.entities.User
+import ru.hse.pensieve.themes.route.ThemeService
 import java.util.UUID
 
 interface PostService {
@@ -26,7 +29,7 @@ interface PostService {
     ): Deferred<Post>
 
     @GET("/posts/by-author")
-    fun getPostsByAuthor(@Query("authorId") authorId: UUID?): Deferred<List<Post>>
+    fun getPostsByAuthor(@Query("authorId") authorId: UUID): Deferred<List<Post>>
 
     @GET("/posts/by-theme")
     fun getPostsByTheme(@Query("themeId") themeId: UUID?): Deferred<List<Post>>

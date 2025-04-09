@@ -13,14 +13,15 @@ import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.posts.route.PostService
 import ru.hse.pensieve.themes.models.ThemeRequest
 import ru.hse.pensieve.themes.route.ThemeService
+import ru.hse.pensieve.utils.UserPreferences
 import java.io.File
 import java.util.UUID
 
 
 class PostRepository {
-    private val postService = Client.getInstanceOfService(PostService::class.java)
-    private val themesService = Client.getInstanceOfService(ThemeService::class.java)
-    private val userId: UUID? = UUID.fromString("a4956bff-2362-4ac7-88c1-fc4fdee8810f")
+    private val postApi = Client.getInstanceOfService(PostService::class.java)
+    private val themesApi = Client.getInstanceOfService(ThemeService::class.java)
+    private val userId: UUID = UserPreferences.getUserId()!!
 
     suspend fun createPostInExistingTheme(text: String, photo: File, themeId: UUID): Post {
         val filePart = MultipartBody.Part.createFormData(
@@ -51,7 +52,15 @@ class PostRepository {
     }
 
     suspend fun getPostsByAuthor(authorId: UUID): List<Post> {
-        return postService.getPostsByAuthor(authorId).await()
+        return try {
+            println("Sending request for authorId: $authorId")
+            val response = postApi.getPostsByAuthor(authorId).await()
+            println("Response received: $response")
+            response
+        } catch (e: Exception) {
+            println("Error in getPostsByAuthor: ${e.message}")
+            emptyList()
+        }
     }
 
     suspend fun getPostsByTheme(themeId: UUID): List<Post> {
