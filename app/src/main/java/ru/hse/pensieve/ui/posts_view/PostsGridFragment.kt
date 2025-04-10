@@ -50,7 +50,7 @@ class PostsGridFragment : Fragment() {
         }
     }
 
-    private fun reversePosition(position : Int) : Int {
+    private fun reversePosition(position: Int): Int {
         return adapter.itemCount - position - 1
     }
 

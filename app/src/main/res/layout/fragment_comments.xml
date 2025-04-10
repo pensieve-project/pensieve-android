@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/orange400">
+
+    <LinearLayout
+        android:layout_width="412dp"
+        android:layout_height="650dp"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/btn_close"
+                style="@style/SmallButtonStyle"
+                android:src="@drawable/ic_close"
+                android:layout_marginRight="86dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comments"
+                android:textSize="26sp"
+                android:layout_gravity="center"
+                android:textColor="@color/beige100" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/commentsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="500dp" />
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:background="@drawable/edittext_with_button_background"
+            android:padding="4dp"
+            android:layout_margin="16dp">
+
+            <EditText
+                android:id="@+id/commentEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:textColorHint="@color/brown950_transparent"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:textColor="@color/brown950"
+                android:padding="8dp"
+                android:hint="Write something..." />
+
+            <ImageButton
+                android:id="@+id/btn_send"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:src="@drawable/send"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="center" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

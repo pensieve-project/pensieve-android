@@ -8,14 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentPostBinding
 import ru.hse.pensieve.posts.PostViewModel
+import ru.hse.pensieve.posts.repository.PostRepository
 import ru.hse.pensieve.ui.profile.ProfileActivity
+import ru.hse.pensieve.utils.UserPreferences
+import java.util.UUID
 
 
 class PostFragment : Fragment() {
+    private val postRepository = PostRepository()
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
+    private val currentUserId = UserPreferences.getUserId()
 
     private val viewModel: PostViewModel by activityViewModels()
 
@@ -53,23 +62,57 @@ class PostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupButtons()
 
+        var postId: UUID
+
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
             if (posts != null) {
-                binding.username.text =
-                    posts[postNumber]?.authorId.toString() // достать username
+                binding.username.text = posts[postNumber]?.authorId.toString() // достать username
                 binding.theme.text = posts[postNumber]?.themeId.toString() // достать тему
                 val photoByteArray = posts[postNumber]?.photo
                 val bitmap = photoByteArray?.toBitmap()
                 binding.imgPhoto.setImageBitmap(bitmap)
-                // location
-                // friends
                 binding.description.text = posts[postNumber]?.text
+
+                postId = posts[postNumber]?.postId!!
+                val likesCount = posts[postNumber]?.likesCount
+                binding.likesAndComments.likeCount.text = likesCount.toString()
+
+                viewModel.loadCommentsCount(postId)
+
+                viewModel.commentsCount.observe(viewLifecycleOwner) { commentsCount ->
+                    binding.likesAndComments.commentCount.text = commentsCount.toString()
+                }
+
+                viewModel.loadLikeStatus(postId, currentUserId!!)
+
+                viewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
+                    val likeIconRes = if (isLiked) R.drawable.likes_fill else R.drawable.likes
+                    binding.likesAndComments.likeIcon.setImageResource(likeIconRes)
+                }
+
+                viewModel.likesCount.observe(viewLifecycleOwner) { likesCount ->
+                    binding.likesAndComments.likeCount.text = likesCount.toString()
+                }
+
+                binding.likesAndComments.likeIcon.setOnClickListener {
+                    val isLiked = viewModel.isLiked.value ?: false
+                    viewModel.toggleLike(postId, isLiked)
+                }
+
+                binding.likesAndComments.commentIcon.setOnClickListener {
+                    showCommentsBottomSheet(postId)
+                }
             } else {
                 binding.description.text = "No posts found"
             }
         }
+    }
 
-        // TODO: likes and comments
+    private fun showCommentsBottomSheet(postId: UUID) {
+        CommentsFragment.newInstance(postId).show(
+            parentFragmentManager,
+            "comments_bottom_sheet"
+        )
     }
 
     private fun ByteArray.toBitmap(): Bitmap? {
