@@ -6,15 +6,25 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.ActivityLoginBinding
+import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.ui.profile.ProfileActivity
+import ru.hse.pensieve.ui.search.SearchActivity
 import ru.hse.pensieve.utils.Hashing
+import ru.hse.pensieve.utils.UserPreferences
 import ru.hse.pensieve.utils.ValidationOfInput
+import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val authViewModel: AuthViewModel by viewModels()
+
+    private val appDatabase by lazy { AppDatabase.getInstance(this) }
+    private val userRepository by lazy { UserRepository(appDatabase.userDao()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +77,11 @@ class LoginActivity : AppCompatActivity() {
     private fun observeViewModel() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
-                startActivity(Intent(this, ProfileActivity::class.java))
+                UserPreferences.saveUserId(user.id!!)
+                lifecycleScope.launch {
+                    userRepository.currentUserId = user.id
+                }
+                startActivity(Intent(this, SearchActivity::class.java))
                 finish()
             }
         })

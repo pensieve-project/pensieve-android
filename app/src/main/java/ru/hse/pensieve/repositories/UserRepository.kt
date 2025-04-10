@@ -8,6 +8,8 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao
 ) {
+    var currentUserId: UUID? = null
+
     suspend fun insertUser(user: User) {
         userDao.insert(user)
     }
@@ -22,5 +24,9 @@ class UserRepository @Inject constructor(
 
     suspend fun getUserById(userId: UUID): User? {
         return userDao.getUserById(userId)
+    }
+
+    suspend fun getCurrentUser(): UUID? {
+        return currentUserId
     }
 }

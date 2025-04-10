@@ -13,8 +13,11 @@ import ru.hse.pensieve.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.profile.ProfileActivity
+import ru.hse.pensieve.ui.search.SearchActivity
 import ru.hse.pensieve.utils.Hashing
+import ru.hse.pensieve.utils.UserPreferences
 import ru.hse.pensieve.utils.ValidationOfInput
+import java.util.UUID
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -86,10 +89,12 @@ class RegistrationActivity : AppCompatActivity() {
     private fun observeViewModel() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
+                UserPreferences.saveUserId(user.id!!)
                 lifecycleScope.launch {
-                    userRepository.insertUser(User(user.id!!, user.username!!, null))
+                    userRepository.currentUserId = user.id
+                    userRepository.insertUser(User(user.id, user.username!!, null))
                 }
-                startActivity(Intent(this, ProfileActivity::class.java))
+                startActivity(Intent(this, SearchActivity::class.java))
                 finish()
             }
         })
