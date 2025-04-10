@@ -63,6 +63,10 @@ class PostRepository {
         }
     }
 
+    suspend fun getAllPosts(): List<Post> {
+        return postService.getAllPosts().await()
+    }
+
     suspend fun getPostsByTheme(themeId: UUID): List<Post> {
         return postService.getPostsByTheme(themeId).await()
     }
