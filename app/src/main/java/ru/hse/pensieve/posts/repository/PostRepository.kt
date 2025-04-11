@@ -71,6 +71,10 @@ class PostRepository {
         return postService.getPostsByTheme(themeId).await()
     }
 
+    suspend fun getPostById(postId: UUID): Post {
+        return postService.getPostById(postId).await()
+    }
+
     suspend fun likePost(authorId: UUID, postId: UUID): Boolean {
         return postService.likePost(Like(authorId, postId)).await().isSuccessful
     }
