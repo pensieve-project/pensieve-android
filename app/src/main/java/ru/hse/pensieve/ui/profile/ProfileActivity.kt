@@ -11,7 +11,6 @@ import ru.hse.pensieve.ui.posts_view.PostsGridFragment
 class ProfileActivity :  ToolbarActivity() {
     private lateinit var binding: ActivityProfileBinding
 
-    private lateinit var postFragment: PostFragment
     private lateinit var postsGridFragment: PostsGridFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,14 +38,6 @@ class ProfileActivity :  ToolbarActivity() {
         postsGridFragment = PostsGridFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsGridFragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    fun showPost(postNumber: Int) {
-        postFragment = PostFragment.newInstance(postNumber)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, postFragment)
             .addToBackStack(null)
             .commit()
     }

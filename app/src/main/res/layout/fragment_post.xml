@@ -6,12 +6,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-        <ImageButton
-            android:id="@+id/btn_prev"
-            style="@style/SmallButtonStyle"
-            android:src="@drawable/ic_left_arrow"
-            android:layout_marginBottom="42dp"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

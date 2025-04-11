@@ -28,6 +28,9 @@ interface PostService {
                    @Part("themeId") themeId: RequestBody
     ): Deferred<Post>
 
+    @GET("/posts")
+    fun getAllPosts(): Deferred<List<Post>>
+
     @GET("/posts/by-author")
     fun getPostsByAuthor(@Query("authorId") authorId: UUID): Deferred<List<Post>>
 

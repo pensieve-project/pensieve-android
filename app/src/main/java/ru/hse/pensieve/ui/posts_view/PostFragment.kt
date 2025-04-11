@@ -21,7 +21,6 @@ import java.util.UUID
 
 
 class PostFragment : Fragment() {
-    private val postRepository = PostRepository()
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
     private val currentUserId = UserPreferences.getUserId()
@@ -60,38 +59,39 @@ class PostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupButtons()
 
         var postId: UUID
 
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
             if (posts != null) {
                 binding.username.text = posts[postNumber]?.authorId.toString() // достать username
-                binding.theme.text = posts[postNumber]?.themeId.toString() // достать тему
+                viewModel.getThemeTitle(posts[postNumber]?.themeId!!)
+                viewModel.themeTitle.observe(viewLifecycleOwner) {
+                    themeTitle -> binding.theme.text = themeTitle
+                }
+                // binding.theme.text = posts[postNumber]?.themeId.toString() // достать тему
                 val photoByteArray = posts[postNumber]?.photo
                 val bitmap = photoByteArray?.toBitmap()
                 binding.imgPhoto.setImageBitmap(bitmap)
                 binding.description.text = posts[postNumber]?.text
 
                 postId = posts[postNumber]?.postId!!
-                val likesCount = posts[postNumber]?.likesCount
-                binding.likesAndComments.likeCount.text = likesCount.toString()
+
+                viewModel.loadLikesCount(postId)
+                viewModel.likesCount.observe(viewLifecycleOwner) { likesCount ->
+                    binding.likesAndComments.likeCount.text = likesCount.toString()
+                }
 
                 viewModel.loadCommentsCount(postId)
-
                 viewModel.commentsCount.observe(viewLifecycleOwner) { commentsCount ->
                     binding.likesAndComments.commentCount.text = commentsCount.toString()
                 }
 
-                viewModel.loadLikeStatus(postId, currentUserId!!)
+                viewModel.loadLikeStatus(postId)
 
                 viewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
                     val likeIconRes = if (isLiked) R.drawable.likes_fill else R.drawable.likes
                     binding.likesAndComments.likeIcon.setImageResource(likeIconRes)
-                }
-
-                viewModel.likesCount.observe(viewLifecycleOwner) { likesCount ->
-                    binding.likesAndComments.likeCount.text = likesCount.toString()
                 }
 
                 binding.likesAndComments.likeIcon.setOnClickListener {
@@ -102,6 +102,7 @@ class PostFragment : Fragment() {
                 binding.likesAndComments.commentIcon.setOnClickListener {
                     showCommentsBottomSheet(postId)
                 }
+
             } else {
                 binding.description.text = "No posts found"
             }
@@ -117,13 +118,6 @@ class PostFragment : Fragment() {
 
     private fun ByteArray.toBitmap(): Bitmap? {
         return BitmapFactory.decodeByteArray(this, 0, this.size)
-    }
-
-    private fun setupButtons() {
-        binding.btnPrev.visibility = View.VISIBLE
-        binding.btnPrev.setOnClickListener {
-            (requireActivity() as ProfileActivity).showGrid()
-        }
     }
 
     override fun onDestroyView() {

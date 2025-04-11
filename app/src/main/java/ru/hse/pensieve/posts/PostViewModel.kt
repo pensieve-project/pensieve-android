@@ -9,11 +9,13 @@ import kotlinx.coroutines.launch
 import ru.hse.pensieve.posts.models.Comment
 import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.posts.repository.PostRepository
+import ru.hse.pensieve.themes.repository.ThemeRepository
 import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
 class PostViewModel : ViewModel() {
     private val postRepository = PostRepository()
+    private val themeRepository = ThemeRepository()
 
     private val _post = MutableLiveData<Post?>()
     val post: MutableLiveData<Post?> get() = _post
@@ -36,7 +38,13 @@ class PostViewModel : ViewModel() {
     private val _commentsCount = MutableLiveData<Int>()
     val commentsCount: MutableLiveData<Int> get() = _commentsCount
 
+    private val _themeTitle = MutableLiveData<String>()
+    val themeTitle: MutableLiveData<String> get() = _themeTitle
+
     private val userId = UserPreferences.getUserId()
+
+    private val _allPosts = MutableLiveData<List<Post?>?>()
+    val allPosts: MutableLiveData<List<Post?>?> get() = _allPosts
 
     suspend fun getCurrentPost(currentUserId: UUID, postNumber: Int) {
         println("id: " + currentUserId)
@@ -57,21 +65,21 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllPosts(currentUserId: UUID) {
-        println("id: " + currentUserId)
+    suspend fun getAllPosts() {
         viewModelScope.launch {
             try {
-                val posts = postRepository.getPostsByAuthor(currentUserId)
+                val posts = postRepository.getAllPosts()
                 if (posts.isNotEmpty()) {
-                    _posts.value = posts
+                    _allPosts.value = posts
+                    println("Posts size " + posts.size)
                 } else {
-                    println("No posts found for user $currentUserId")
-                    _posts.value = emptyList()
+                    println("No posts found")
+                    _allPosts.value = emptyList()
                 }
             } catch (e: Exception) {
                 println("Error in getAllPosts: ${e.message}")
                 e.printStackTrace()
-                _posts.value = emptyList()
+                _allPosts.value = emptyList()
             }
         }
     }
@@ -104,9 +112,10 @@ class PostViewModel : ViewModel() {
         return BitmapFactory.decodeByteArray(this, 0, this.size)
     }
 
-    fun loadLikeStatus(postId: UUID, userId: UUID) {
+    fun loadLikeStatus(postId: UUID) {
         viewModelScope.launch {
-            val hasLiked = postRepository.hasUserLikedPost(postId, userId)
+            val hasLiked = postRepository.hasUserLikedPost(postId, userId!!)
+            println(hasLiked)
             _isLiked.value = hasLiked
         }
     }
@@ -128,6 +137,13 @@ class PostViewModel : ViewModel() {
         viewModelScope.launch {
             val count = postRepository.getCommentsCount(postId)
             _commentsCount.value = count
+        }
+    }
+
+    fun loadLikesCount(postId: UUID) {
+        viewModelScope.launch {
+            val count = postRepository.getLikesCount(postId)
+            _likesCount.value = count
         }
     }
 
@@ -156,9 +172,22 @@ class PostViewModel : ViewModel() {
                 val currentList = _comments.value?.toMutableList() ?: mutableListOf()
                 currentList.add(newComment)
                 _comments.value = currentList
-            }
-            catch (e: Exception) {
+                _commentsCount.value = _commentsCount.value!! + 1
+            } catch (e: Exception) {
                 println("Error in leaveComment: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun getThemeTitle(themeId: UUID) {
+        viewModelScope.launch {
+            try {
+                val themeTitle = themeRepository.getThemeTitle(themeId)
+                _themeTitle.value = themeTitle
+                println(themeTitle)
+            } catch (e: Exception) {
+                println("Error in getThemeTitle: ${e.message}")
                 e.printStackTrace()
             }
         }

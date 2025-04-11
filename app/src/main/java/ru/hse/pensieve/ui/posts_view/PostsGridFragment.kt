@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.posts_view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
+import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentPostsGridBinding
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.ui.profile.ProfileActivity
@@ -33,8 +35,12 @@ class PostsGridFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ImageAdapter(emptyList()) { position ->
-            (requireActivity() as ProfileActivity).showPost(reversePosition(position))
+            val intent = Intent(requireContext(), OpenPostActivity::class.java).apply {
+                putExtra("POST_NUMBER", reversePosition(position))
+            }
+            startActivity(intent)
         }
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
