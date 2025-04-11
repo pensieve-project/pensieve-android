@@ -19,6 +19,10 @@ class ThemeRepository {
         return themeApi.getAllThemes().await()
     }
 
+    suspend fun searchThemes(query: String): List<Theme> {
+        return themeApi.searchThemes(query).await()
+    }
+    
     suspend fun getThemeTitle(themeId: UUID): String {
         return themeApi.getThemeTitle(themeId).await()
     }
