@@ -26,6 +26,10 @@ class UserRepository @Inject constructor(
         return userDao.getUserById(userId)
     }
 
+    suspend fun getUsernameById(userId: UUID): String? {
+        return userDao.getUsernameById(userId)
+    }
+
     suspend fun getCurrentUser(): UUID? {
         return currentUserId
     }

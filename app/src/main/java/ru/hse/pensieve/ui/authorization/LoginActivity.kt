@@ -78,6 +78,7 @@ class LoginActivity : AppCompatActivity() {
         authViewModel.user.observe(this, { user ->
             if (user != null) {
                 UserPreferences.saveUserId(user.id!!)
+                UserPreferences.saveUserUsername(user.id, user.username!!)
                 lifecycleScope.launch {
                     userRepository.currentUserId = user.id
                 }

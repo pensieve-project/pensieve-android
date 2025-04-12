@@ -16,6 +16,14 @@ object UserPreferences {
         sharedPreferences.edit().putString("user_id", userId.toString()).apply()
     }
 
+    fun saveUserUsername(userId: UUID, username: String) {
+        sharedPreferences.edit().putString("username_$userId", username).apply()
+    }
+
+    fun getUsername(userId: UUID): String? {
+        return sharedPreferences.getString("username_$userId", null)
+    }
+
     fun getUserId(): UUID? {
         val userIdString = sharedPreferences.getString("user_id", null)
         return userIdString?.let { UUID.fromString(it) }

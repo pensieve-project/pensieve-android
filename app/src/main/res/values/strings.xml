@@ -11,6 +11,7 @@
     <string name="profile">Profile</string>
     <string name="search">Search</string>
     <string name="feed">Feed</string>
+    <string name="hi_im_username">Hi, I\'m username!</string>
     <string name="favourites">Favourites</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
