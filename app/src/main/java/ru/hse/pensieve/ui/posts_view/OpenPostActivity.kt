@@ -3,17 +3,15 @@ package ru.hse.pensieve.ui.posts_view
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityOpenPostBinding
-import ru.hse.pensieve.databinding.ActivityProfileBinding
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.utils.UserPreferences
+import java.util.UUID
 
 class OpenPostActivity : ToolbarActivity() {
     private lateinit var binding: ActivityOpenPostBinding
@@ -37,15 +35,16 @@ class OpenPostActivity : ToolbarActivity() {
         val button5 = binding.root.findViewById<ImageButton>(R.id.button5)
         button5.setImageResource(R.drawable.person_fill1)
 
-        val postNumber = intent.getIntExtra("POST_NUMBER", 0)
+        val postId = UUID.fromString(intent.getStringExtra("POST_ID"))
+        println("get " + postId)
 
         lifecycleScope.launch {
             UserPreferences.getUserId()?.let { userId ->
-                viewModel.getAllPostsImages(userId)
+                viewModel.getAllUsersPosts(userId)
                 viewModel.posts.observe(this@OpenPostActivity) { posts ->
-                    if (posts != null && postNumber < posts.size) {
+                    if (posts != null) {
                         supportFragmentManager.commit {
-                            replace(R.id.post_container, PostFragment.newInstance(postNumber))
+                            replace(R.id.post_container, PostFragment.newInstance(postId))
                         }
                     }
                 }

@@ -8,45 +8,39 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentPostBinding
 import ru.hse.pensieve.posts.PostViewModel
-import ru.hse.pensieve.posts.repository.PostRepository
-import ru.hse.pensieve.ui.profile.ProfileActivity
-import ru.hse.pensieve.utils.UserPreferences
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.util.UUID
 
 
 class PostFragment : Fragment() {
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
-    private val currentUserId = UserPreferences.getUserId()
+    private lateinit var postId: UUID
 
     private val viewModel: PostViewModel by activityViewModels()
 
-    private var postNumber: Int = 0
-
     companion object {
-        private const val ARG_POST_NUMBER = "postNumber"
+        private const val ARG_POST_ID = "post_id"
 
-        fun newInstance(postNumber: Int): PostFragment {
-            val fragment = PostFragment()
-            val args = Bundle().apply {
-                putInt(ARG_POST_NUMBER, postNumber)
+        fun newInstance(postId: UUID): PostFragment {
+            return PostFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_POST_ID, postId.toString())
+                }
             }
-            fragment.arguments = args
-            return fragment
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            postNumber = it.getInt(ARG_POST_NUMBER, 0)
-        }
+        postId = UUID.fromString(requireArguments().getString(ARG_POST_ID)!!)
+        println("Opening " + postId)
     }
 
     override fun onCreateView(
@@ -59,23 +53,21 @@ class PostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        var postId: UUID
-
-        viewModel.posts.observe(viewLifecycleOwner) { posts ->
-            if (posts != null) {
-                binding.username.text = posts[postNumber]?.authorId.toString() // достать username
-                viewModel.getThemeTitle(posts[postNumber]?.themeId!!)
+        viewModel.getAllPosts()
+        viewModel.getPostById(postId)
+        viewModel.post.observe(viewLifecycleOwner) { post ->
+            if (post != null) {
+                // binding.avatar.
+                binding.username.text = post.authorId.toString() // достать username
+                viewModel.getThemeTitle(post.themeId!!)
                 viewModel.themeTitle.observe(viewLifecycleOwner) {
                     themeTitle -> binding.theme.text = themeTitle
                 }
-                // binding.theme.text = posts[postNumber]?.themeId.toString() // достать тему
-                val photoByteArray = posts[postNumber]?.photo
+                val photoByteArray = post.photo
                 val bitmap = photoByteArray?.toBitmap()
                 binding.imgPhoto.setImageBitmap(bitmap)
-                binding.description.text = posts[postNumber]?.text
-
-                postId = posts[postNumber]?.postId!!
+                binding.description.text = post.text
+                binding.date.text = formatInstant(post.timeStamp!!)
 
                 viewModel.loadLikesCount(postId)
                 viewModel.likesCount.observe(viewLifecycleOwner) { likesCount ->
@@ -104,9 +96,16 @@ class PostFragment : Fragment() {
                 }
 
             } else {
+                println("No posts found")
                 binding.description.text = "No posts found"
             }
         }
+    }
+
+    private fun formatInstant(instant: Instant): String {
+        val formatter = DateTimeFormatter.ofPattern("MM.dd.yyyy", Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+        return formatter.format(instant)
     }
 
     private fun showCommentsBottomSheet(postId: UUID) {

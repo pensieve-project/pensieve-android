@@ -65,7 +65,7 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllPosts() {
+    fun getAllPosts() {
         viewModelScope.launch {
             try {
                 val posts = postRepository.getAllPosts()
@@ -84,25 +84,20 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllPostsImages(currentUserId: UUID) {
+    suspend fun getAllUsersPosts(currentUserId: UUID) {
         viewModelScope.launch {
             try {
                 val posts = postRepository.getPostsByAuthor(currentUserId)
                 if (posts.isNotEmpty()) {
-                    val images = posts.mapNotNull { post ->
-                        post.photo?.toBitmap()
-                    }
-                    _postImages.value = images
                     _posts.value = posts
+                    _allPosts.value = posts
                 } else {
                     println("No posts found for user $currentUserId")
-                    _postImages.value = emptyList()
                     _posts.value = emptyList()
                 }
             } catch (e: Exception) {
-                println("Error in getAllPostsImages: ${e.message}")
+                println("Error in getAllUsersPosts: ${e.message}")
                 e.printStackTrace()
-                _postImages.value = emptyList()
                 _posts.value = emptyList()
             }
         }
@@ -191,5 +186,9 @@ class PostViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
+    }
+
+    fun getPostById(id: UUID) {
+        _post.value = _allPosts.value?.find { it?.postId == id }
     }
 }

@@ -31,6 +31,7 @@ class CommentsAdapter(private var comments: List<Comment?>) :
 
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(comment: Comment) {
+            // ава
             itemView.findViewById<TextView>(R.id.commentAuthor).text = comment.authorId.toString()
             itemView.findViewById<TextView>(R.id.commentText).text = comment.text
         }
