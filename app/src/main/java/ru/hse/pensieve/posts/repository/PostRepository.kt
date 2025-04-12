@@ -63,8 +63,16 @@ class PostRepository {
         }
     }
 
+    suspend fun getAllPosts(): List<Post> {
+        return postService.getAllPosts().await()
+    }
+
     suspend fun getPostsByTheme(themeId: UUID): List<Post> {
         return postService.getPostsByTheme(themeId).await()
+    }
+
+    suspend fun getPostById(postId: UUID): Post {
+        return postService.getPostById(postId).await()
     }
 
     suspend fun likePost(authorId: UUID, postId: UUID): Boolean {
@@ -76,7 +84,7 @@ class PostRepository {
     }
 
     suspend fun hasUserLikedPost(authorId: UUID, postId: UUID) : Boolean {
-        return postService.hasUserLikedPost(Like(authorId, postId)).await()
+        return postService.hasUserLikedPost(authorId, postId).await()
     }
 
     suspend fun getLikesCount(postId: UUID) : Int {

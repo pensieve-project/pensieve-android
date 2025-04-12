@@ -85,10 +85,13 @@ abstract class ToolbarActivity : AppCompatActivity() {
 
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
-                if (currentSelectedButtonIndex != -1) {
+                if (index == 2) {
+                    button.postDelayed({
+                        button.setImageResource(defaultIcons[index])
+                    }, 200)
+                } else if (currentSelectedButtonIndex != -1) {
                     buttons[currentSelectedButtonIndex].setImageResource(defaultIcons[currentSelectedButtonIndex])
                 }
-
                 button.setImageResource(selectedIcons[index])
 
                 currentSelectedButtonIndex = index

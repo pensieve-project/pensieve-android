@@ -11,6 +11,7 @@ import ru.hse.pensieve.authentication.models.tokens.TokenAuthenticator
 import ru.hse.pensieve.authentication.models.TokenManager
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object JacksonConfig {
     val objectMapper: ObjectMapper = ObjectMapper().registerModule(JavaTimeModule())
@@ -39,6 +40,7 @@ object Client {
 
         retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(JacksonConverterFactory.create(JacksonConfig.objectMapper))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(okHttpClient)

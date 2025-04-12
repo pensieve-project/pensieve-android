@@ -25,11 +25,17 @@ interface PostService {
                    @Part("themeId") themeId: RequestBody
     ): Deferred<Post>
 
+    @GET("/posts")
+    fun getAllPosts(): Deferred<List<Post>>
+
     @GET("/posts/by-author")
     fun getPostsByAuthor(@Query("authorId") authorId: UUID): Deferred<List<Post>>
 
     @GET("/posts/by-theme")
     fun getPostsByTheme(@Query("themeId") themeId: UUID?): Deferred<List<Post>>
+
+    @GET("/posts/by-id")
+    fun getPostById(@Query("postId") postId: UUID?): Deferred<Post>
 
     @POST("/posts/like")
     fun likePost(@Body request: Like?): Deferred<Response<Void>>
@@ -38,7 +44,7 @@ interface PostService {
     fun unlikePost(@Body request: Like?): Deferred<Response<Void>>
 
     @GET("/posts/liked")
-    fun hasUserLikedPost(@Body request: Like?): Deferred<Boolean>
+    fun hasUserLikedPost(@Query("authorId") authorId: UUID?, @Query("postId") postId: UUID?): Deferred<Boolean>
 
     @GET("/posts/likes-count")
     fun getLikesCount(@Query("postId") postId: UUID?): Deferred<Int>

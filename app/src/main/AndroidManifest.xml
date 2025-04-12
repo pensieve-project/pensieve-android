@@ -59,6 +59,11 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".ui.posts_view.OpenPostActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
     </application>
 
 </manifest>

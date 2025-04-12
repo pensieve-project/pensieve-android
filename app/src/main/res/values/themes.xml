@@ -49,4 +49,10 @@
         <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
 
+    <style name="BottomSheetTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>
