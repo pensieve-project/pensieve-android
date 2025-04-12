@@ -84,7 +84,7 @@ class PostRepository {
     }
 
     suspend fun hasUserLikedPost(authorId: UUID, postId: UUID) : Boolean {
-        return postService.hasUserLikedPost(Like(authorId, postId)).await()
+        return postService.hasUserLikedPost(authorId, postId).await()
     }
 
     suspend fun getLikesCount(postId: UUID) : Int {

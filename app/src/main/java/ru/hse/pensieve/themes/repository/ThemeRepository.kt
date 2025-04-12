@@ -1,5 +1,6 @@
 package ru.hse.pensieve.themes.repository
 
+import kotlinx.coroutines.Deferred
 import ru.hse.pensieve.api.Client
 import ru.hse.pensieve.themes.route.ThemeService
 import ru.hse.pensieve.themes.models.Theme
@@ -24,6 +25,6 @@ class ThemeRepository {
     }
     
     suspend fun getThemeTitle(themeId: UUID): String {
-        return themeApi.getThemeTitle(themeId).await()
+        return themeApi.getThemeTitle(themeId).string()
     }
 }

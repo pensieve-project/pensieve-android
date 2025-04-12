@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.posts_view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +10,23 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
+import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentPostsGridBinding
 import ru.hse.pensieve.posts.PostViewModel
+import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.ui.profile.ProfileActivity
 import ru.hse.pensieve.utils.UserPreferences
+import java.util.UUID
 
 class PostsGridFragment : Fragment() {
     private var _binding: FragmentPostsGridBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: PostViewModel by activityViewModels()
     private lateinit var adapter: ImageAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPostsGridBinding.inflate(inflater, container, false)
@@ -32,26 +36,26 @@ class PostsGridFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ImageAdapter(emptyList()) { position ->
-            (requireActivity() as ProfileActivity).showPost(reversePosition(position))
+        adapter = ImageAdapter(emptyList()) { postId ->
+            val intent = Intent(requireContext(), OpenPostActivity::class.java).apply {
+                putExtra("POST_ID", postId.toString())
+            }
+            startActivity(intent)
         }
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
         lifecycleScope.launch {
             val currentUserId = UserPreferences.getUserId()
             if (currentUserId != null) {
-                viewModel.getAllPostsImages(currentUserId)
-                viewModel.postImages.observe(viewLifecycleOwner) { bitmaps ->
-                    adapter.images = bitmaps.reversed()
+                viewModel.getAllUsersPosts(currentUserId)
+                viewModel.posts.observe(viewLifecycleOwner) { posts ->
+                    adapter.posts = posts?.reversed() as List<Post>
                     adapter.notifyDataSetChanged()
                 }
             }
         }
-    }
-
-    private fun reversePosition(position : Int) : Int {
-        return adapter.itemCount - position - 1
     }
 
     override fun onDestroyView() {

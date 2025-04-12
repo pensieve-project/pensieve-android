@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityFeedBinding
 import ru.hse.pensieve.ui.ToolbarActivity
+import ru.hse.pensieve.ui.posts_view.PostsFeedFragment
 
 class FeedActivity :  ToolbarActivity() {
     private lateinit var binding: ActivityFeedBinding
@@ -27,5 +28,9 @@ class FeedActivity :  ToolbarActivity() {
         setupButtons(buttons, defaultIcons, selectedIcons, -1)
         val button1 = binding.root.findViewById<ImageButton>(R.id.button1)
         button1.setImageResource(R.drawable.house_fill)
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.feed_container, PostsFeedFragment.newInstance())
+            .commit()
     }
 }

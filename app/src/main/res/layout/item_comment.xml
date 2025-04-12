@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="horizontal"
+    android:background="@color/orange400">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/profile_image_very_small"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/orange400"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/commentAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Автор"
+            android:textSize="14sp"
+            android:textColor="@color/beige100"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/commentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Текст комментария"
+            android:textSize="14sp"
+            android:textColor="@color/beige100"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+</LinearLayout>

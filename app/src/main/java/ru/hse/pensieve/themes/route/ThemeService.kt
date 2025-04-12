@@ -1,6 +1,7 @@
 package ru.hse.pensieve.themes.route
 
 import kotlinx.coroutines.Deferred
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -20,5 +21,5 @@ interface ThemeService {
     fun searchThemes(@Query("query") query: String): Deferred<List<Theme>>
 
     @GET("/themes/title")
-    fun getThemeTitle(@Query("themeId") themeId: UUID): Deferred<String>
+    suspend fun getThemeTitle(@Query("themeId") themeId: UUID): ResponseBody
 }
