@@ -10,13 +10,10 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
-import ru.hse.pensieve.api.Client
 import ru.hse.pensieve.posts.models.Comment
 import ru.hse.pensieve.posts.models.CommentRequest
 import ru.hse.pensieve.posts.models.Like
 import ru.hse.pensieve.posts.models.Post
-import ru.hse.pensieve.room.entities.User
-import ru.hse.pensieve.themes.route.ThemeService
 import java.util.UUID
 
 interface PostService {

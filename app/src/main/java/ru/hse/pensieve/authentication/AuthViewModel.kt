@@ -1,8 +1,9 @@
 package ru.hse.pensieve.authentication
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.authentication.models.AuthenticationResponse
@@ -10,8 +11,8 @@ import ru.hse.pensieve.authentication.models.LoginRequest
 import ru.hse.pensieve.authentication.models.RegistrationRequest
 import ru.hse.pensieve.authentication.repository.AuthRepository
 
-class AuthViewModel: ViewModel() {
-    private val authRepository = AuthRepository()
+class AuthViewModel(application: Application) : AndroidViewModel(application) {
+    private val authRepository = AuthRepository(application.applicationContext)
 
     private val _user = MutableLiveData<AuthenticationResponse>()
     val user: LiveData<AuthenticationResponse> get() = _user
