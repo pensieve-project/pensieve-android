@@ -31,4 +31,7 @@ interface ProfileService {
 
     @GET("/profile/avatar")
     suspend fun getAvatarByAuthorId(@Query("authorId") authorId: UUID): ByteArray
+
+    @GET("/profile/username")
+    suspend fun getUsernameByAuthorId(@Query("authorId") authorId: UUID): String
 }

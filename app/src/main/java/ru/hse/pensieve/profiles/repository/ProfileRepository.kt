@@ -53,4 +53,8 @@ class ProfileRepository {
     suspend fun getAvatarByAuthorId(authorId: UUID): ByteArray {
         return profileService.getAvatarByAuthorId(authorId)
     }
+
+    suspend fun getUsernameByAuthorId(authorId: UUID): String {
+        return profileService.getUsernameByAuthorId(authorId)
+    }
 }

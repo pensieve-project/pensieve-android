@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import ru.hse.pensieve.posts.models.Comment
 import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.posts.repository.PostRepository
+import ru.hse.pensieve.profiles.repository.ProfileRepository
 import ru.hse.pensieve.themes.repository.ThemeRepository
 import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
@@ -16,6 +17,7 @@ import java.util.UUID
 class PostViewModel : ViewModel() {
     private val postRepository = PostRepository()
     private val themeRepository = ThemeRepository()
+    private val profileRepository = ProfileRepository()
 
     private val _post = MutableLiveData<Post?>()
     val post: MutableLiveData<Post?> get() = _post
@@ -40,6 +42,9 @@ class PostViewModel : ViewModel() {
 
     private val _themeTitle = MutableLiveData<String>()
     val themeTitle: MutableLiveData<String> get() = _themeTitle
+
+    private val _authorUsername = MutableLiveData<String>()
+    val authorUsername: MutableLiveData<String> get() = _authorUsername
 
     private val userId = UserPreferences.getUserId()
 
@@ -183,6 +188,18 @@ class PostViewModel : ViewModel() {
                 println(themeTitle)
             } catch (e: Exception) {
                 println("Error in getThemeTitle: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun getAuthorUsername(authorId: UUID) {
+        viewModelScope.launch {
+            try {
+                val username = profileRepository.getUsernameByAuthorId(authorId)
+                _authorUsername.value = username
+            } catch (e: Exception) {
+                println("getAuthorUsername: ${e.message}")
                 e.printStackTrace()
             }
         }
