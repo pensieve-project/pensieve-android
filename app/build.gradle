@@ -19,6 +19,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "MAPKIT_API_KEY", "\"${mapkitApiKey}\""
     }
 
     buildTypes {
@@ -35,6 +37,7 @@ android {
         jvmTarget = '11'
     }
     buildFeatures {
+        buildConfig true
         compose true
         viewBinding true
     }
@@ -74,6 +77,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation("com.squareup.retrofit2:converter-jackson:2.1.0")
     implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.lifecycle.runtime.ktx
@@ -105,6 +109,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation libs.androidx.room.ktx
     ksp "androidx.room:room-compiler:$room_version"
+
+    implementation 'com.yandex.android:maps.mobile:4.14.0-full'
 }
 
 kapt {

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ru.hse.pensieve.databinding.ActivityCreatePostBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
+import ru.hse.pensieve.ui.map.LocationSearchFragment
 
 class CreatePostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreatePostBinding
@@ -15,6 +16,7 @@ class CreatePostActivity : AppCompatActivity() {
         ChooseThemeFragment(),
         ChoosePhotoFragment(),
         CreateDescriptionFragment(),
+        LocationSearchFragment(),
         ResultFragment()
     )
 
