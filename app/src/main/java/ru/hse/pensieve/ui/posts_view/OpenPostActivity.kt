@@ -38,17 +38,8 @@ class OpenPostActivity : ToolbarActivity() {
         val postId = UUID.fromString(intent.getStringExtra("POST_ID"))
         println("get " + postId)
 
-        lifecycleScope.launch {
-            UserPreferences.getUserId()?.let { userId ->
-                viewModel.getAllUsersPosts(userId)
-                viewModel.posts.observe(this@OpenPostActivity) { posts ->
-                    if (posts != null) {
-                        supportFragmentManager.commit {
-                            replace(R.id.post_container, PostFragment.newInstance(postId))
-                        }
-                    }
-                }
-            }
+        supportFragmentManager.commit {
+            replace(R.id.post_container, PostFragment.newInstance(postId))
         }
 
         binding.btnPrev.setOnClickListener {

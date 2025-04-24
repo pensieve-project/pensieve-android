@@ -12,10 +12,13 @@ import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.InputListener
+import com.yandex.mapkit.map.Map
+import com.yandex.mapkit.map.VisibleRegionUtils
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.search.*
+import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
-import ru.hse.pensieve.BuildConfig
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentLocationSearchBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
@@ -28,12 +31,55 @@ class LocationSearchFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var geocoder: Geocoder
     private lateinit var viewModel: CreatePostViewModel
+    private lateinit var searchManager: SearchManager
+    private var searchSession: Session? = null
 
     var chosenPoint: ru.hse.pensieve.posts.models.Point? = null
 
+    private val searchListener = object : Session.SearchListener {
+        override fun onSearchResponse(response: Response) {
+            if (response.collection.children.isEmpty()) {
+                Toast.makeText(context, "Location not found", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val firstResult = response.collection.children.first().obj
+            val point = firstResult?.geometry?.firstOrNull()?.point
+                ?: return Toast.makeText(context, "Failed to determine coordinates", Toast.LENGTH_SHORT).show()
+
+            chosenPoint = ru.hse.pensieve.posts.models.Point(point.latitude, point.longitude)
+            moveCameraToPoint(point)
+            addMarker(point)
+
+            val name = firstResult.name ?: "Unknown place"
+            val address = firstResult.metadataContainer.run {
+                getItem(ToponymObjectMetadata::class.java)?.address?.formattedAddress
+                    ?: getItem(BusinessObjectMetadata::class.java)?.address?.formattedAddress
+                    ?: "No address"
+            }
+
+            binding.locationInfo.text = """
+                Name: $name
+                Address: $address
+                Coordinates: ${point.latitude}, ${point.longitude}
+            """.trimIndent()
+        }
+
+        override fun onSearchError(error: Error) {
+            Toast.makeText(context, "Error in search", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val mapInputListener = object : InputListener {
+        override fun onMapTap(map: Map, point: Point) {
+            searchReverseGeocode(point)
+        }
+
+        override fun onMapLongTap(map: Map, point: Point) {}
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
         MapKitFactory.initialize(requireContext())
         geocoder = Geocoder(requireContext(), Locale.getDefault())
     }
@@ -51,19 +97,23 @@ class LocationSearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(CreatePostViewModel::class.java)
+        searchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.COMBINED)
 
         setupButtons()
         updateNavigationButtons()
 
         mapView = binding.mapView
+        mapView.map.addInputListener(mapInputListener)
         mapView.map.move(
-            CameraPosition(Point(55.751244, 37.6176), 10f, 0f, 0f)
+            CameraPosition(Point(59.9386, 30.3141), 10f, 0f, 0f),
+            Animation(Animation.Type.SMOOTH, 1f),
+            null
         )
 
         binding.searchButton.setOnClickListener {
             when {
                 binding.searchEditText.text.isNullOrEmpty() -> {
-                    Toast.makeText(context, "Введите название места или координаты", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Place name or coordinates...", Toast.LENGTH_SHORT).show()
                 }
                 isCoordinateInput(binding.searchEditText.text.toString()) -> {
                     searchByCoordinates(binding.searchEditText.text.toString())
@@ -87,61 +137,33 @@ class LocationSearchFragment : Fragment() {
             val lon = parts[1].trim().toDouble()
 
             val point = Point(lat, lon)
-            chosenPoint = ru.hse.pensieve.posts.models.Point(lat, lon)
-            moveCameraToPoint(point)
-
-            // Можно добавить маркер
-            mapView.map.mapObjects.clear()
-
-            val imageProvider =
-                ImageProvider.fromResource(requireContext(), R.drawable.geo_light)
-
-            mapView.mapWindow.map.mapObjects.addPlacemark().apply {
-                geometry = point
-                setIcon(imageProvider)
-            }
-
-            // Получаем адрес по координатам
-            val addresses = geocoder.getFromLocation(lat, lon, 1)
-            addresses?.firstOrNull()?.let {
-                val address = it.getAddressLine(0)
-                binding.locationInfo.text = "Адрес: $address\nКоординаты: $lat, $lon"
-            }
+            searchReverseGeocode(point)
         } catch (e: Exception) {
-            Toast.makeText(context, "Некорректные координаты", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Incorrect coordinates", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun searchByQuery(query: String) {
-        try {
-            val addresses = geocoder.getFromLocationName(query, 1)
-            addresses?.firstOrNull()?.let {
-                val lat = it.latitude
-                val lon = it.longitude
-                val point = Point(lat, lon)
-                chosenPoint = ru.hse.pensieve.posts.models.Point(lat, lon)
+        searchSession = searchManager.submit(
+            query,
+            VisibleRegionUtils.toPolygon(mapView.map.visibleRegion),
+            SearchOptions().apply {
+                searchTypes = SearchType.BIZ.value or SearchType.GEO.value
+                resultPageSize = 1
+            },
+            searchListener
+        )
+    }
 
-                moveCameraToPoint(point)
-
-                // Добавляем маркер
-                mapView.map.mapObjects.clear()
-
-                val imageProvider =
-                    ImageProvider.fromResource(requireContext(), R.drawable.geo_light)
-
-                mapView.mapWindow.map.mapObjects.addPlacemark().apply {
-                    geometry = point
-                    setIcon(imageProvider)
-                }
-
-                val address = it.getAddressLine(0)
-                binding.locationInfo.text = "Адрес: $address\nКоординаты: $lat, $lon"
-            } ?: run {
-                Toast.makeText(context, "Место не найдено", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(context, "Ошибка поиска", Toast.LENGTH_SHORT).show()
-        }
+    private fun searchReverseGeocode(point: Point) {
+        searchSession = searchManager.submit(
+            point,
+            15,
+            SearchOptions().apply {
+                searchTypes = SearchType.GEO.value
+            },
+            searchListener
+        )
     }
 
     private fun moveCameraToPoint(point: Point) {
@@ -150,6 +172,15 @@ class LocationSearchFragment : Fragment() {
             Animation(Animation.Type.SMOOTH, 1f),
             null
         )
+    }
+
+    private fun addMarker(point: Point) {
+        mapView.map.mapObjects.clear()
+        val imageProvider = ImageProvider.fromResource(requireContext(), R.drawable.geo_light)
+        mapView.mapWindow.map.mapObjects.addPlacemark().apply {
+            geometry = point
+            setIcon(imageProvider)
+        }
     }
 
     override fun onStart() {
@@ -179,8 +210,7 @@ class LocationSearchFragment : Fragment() {
         }
 
         binding.btnNext.setOnClickListener {
-            viewModel.postLocation.value = ru.hse.pensieve.posts.models.Point(59.9386, 30.3141)
-//            viewModel.postLocation.value = chosenPoint
+            viewModel.postLocation.value = chosenPoint
             (requireActivity() as CreatePostActivity).nextStep()
         }
 

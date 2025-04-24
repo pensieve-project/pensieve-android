@@ -3,7 +3,6 @@ package ru.hse.pensieve.ui.posts_view
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +17,8 @@ import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import ru.hse.pensieve.R
-import ru.hse.pensieve.BuildConfig
 import ru.hse.pensieve.posts.PostViewModel
-//import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment.Companion.ARG_POSTS_TYPE
 import ru.hse.pensieve.utils.UserPreferences
-import java.util.UUID
 
 class PostsOnMapFragment : Fragment() {
     private lateinit var mapView: MapView
@@ -30,23 +26,22 @@ class PostsOnMapFragment : Fragment() {
 
     private val viewModel: PostViewModel by activityViewModels()
 
-//    companion object {
-//        private const val ARG_POSTS_TYPE = "posts_type"
-//
-//        fun newInstance(postsType: String): PostFragment {
-//            return PostFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_POSTS_TYPE, postsType)
-//                }
-//            }
-//        }
-//    }
+    companion object {
+        private const val ARG_POSTS_TYPE = "posts_type"
+
+        fun newInstance(postsType: String): PostsOnMapFragment {
+            return PostsOnMapFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_POSTS_TYPE, postsType)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
         MapKitFactory.initialize(requireContext())
-//        postsType = requireArguments().getString(ARG_POSTS_TYPE)!!
+        postsType = requireArguments().getString(ARG_POSTS_TYPE)!!
     }
 
     override fun onCreateView(
@@ -61,10 +56,9 @@ class PostsOnMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        viewModel.getAllPosts()
-//        if (postsType == "USERS_POSTS") {
+        if (postsType == "USERS_POSTS") {
             viewModel.getAllUsersPosts(UserPreferences.getUserId()!!)
-//        }
+        }
         mapView = view.findViewById(R.id.mapview)
 
         mapView.map.move(

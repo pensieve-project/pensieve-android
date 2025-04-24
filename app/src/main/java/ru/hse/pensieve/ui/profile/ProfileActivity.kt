@@ -88,7 +88,8 @@ class ProfileActivity :  ToolbarActivity() {
     }
 
     private fun showMap() {
-        postsOnMapFragment = PostsOnMapFragment()
+        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS")
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsOnMapFragment)
             .addToBackStack(null)

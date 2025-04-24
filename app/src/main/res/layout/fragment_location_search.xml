@@ -46,18 +46,18 @@
 
         <EditText
             android:id="@+id/searchEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Название места или широта,долгота"
-            android:imeOptions="actionSearch"
+            style="@style/EditTextStyle"
+            android:hint="Place name or coordinates..."
             android:inputType="textCapSentences|textAutoComplete" />
 
-        <Button
-            android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Поиск" />
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_marginTop="10dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:src="@drawable/search_fill"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="center" />
 
     </LinearLayout>
 
