@@ -4,31 +4,48 @@ import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.LiveData
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityFeedBinding
+import ru.hse.pensieve.feed.FeedViewModel
+import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
+import ru.hse.pensieve.ui.posts_view.PostsDataSource
 import ru.hse.pensieve.ui.posts_view.PostsFeedFragment
+
+class SubscriptionsDataSource(
+    private val feedViewModel: FeedViewModel
+) : PostsDataSource {
+    override fun getPosts(): LiveData<List<Post>> {
+        return feedViewModel.subscribedPosts
+    }
+
+    override fun loadMorePosts() {
+        feedViewModel.loadMorePosts()
+    }
+}
 
 class FeedActivity :  ToolbarActivity() {
     private lateinit var binding: ActivityFeedBinding
-    private val viewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    private val feedViewModel: FeedViewModel by viewModels()
     private var isSearchActive = false
-    private lateinit var postsFeedFragment: PostsFeedFragment
     private lateinit var usersSearchFragment: UsersSearchFragment
+    private lateinit var subscriptionsFragment: PostsFeedFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        postsFeedFragment = PostsFeedFragment.newInstance()
         usersSearchFragment = UsersSearchFragment.newInstance()
+        subscriptionsFragment = PostsFeedFragment.newInstance(SubscriptionsDataSource(feedViewModel))
 
         supportFragmentManager.beginTransaction()
             .add(R.id.feed_container, usersSearchFragment)
             .hide(usersSearchFragment)
-            .add(R.id.feed_container, postsFeedFragment)
+            .add(R.id.feed_container, subscriptionsFragment)
             .commit()
 
         setupToolBar()
@@ -48,7 +65,7 @@ class FeedActivity :  ToolbarActivity() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { viewModel.searchUsers(it) }
+                query?.let { searchViewModel.searchUsers(it) }
                 return true
             }
 
@@ -61,7 +78,7 @@ class FeedActivity :  ToolbarActivity() {
                     isSearchActive = true
                     showSearchResults()
                 }
-                viewModel.searchUsers(newText)
+                searchViewModel.searchUsers(newText)
                 return true
             }
         })
@@ -79,13 +96,13 @@ class FeedActivity :  ToolbarActivity() {
     private fun showPostsFeed() {
         supportFragmentManager.beginTransaction()
             .hide(usersSearchFragment)
-            .show(postsFeedFragment)
+            .show(subscriptionsFragment)
             .commit()
     }
 
     private fun showSearchResults() {
         supportFragmentManager.beginTransaction()
-            .hide(postsFeedFragment)
+            .hide(subscriptionsFragment)
             .show(usersSearchFragment)
             .commit()
     }
@@ -93,7 +110,7 @@ class FeedActivity :  ToolbarActivity() {
     private fun closeSearch() {
         isSearchActive = false
         binding.searchView.clearFocus()
-        viewModel.clearSearch()
+        searchViewModel.clearSearch()
         showPostsFeed()
     }
 

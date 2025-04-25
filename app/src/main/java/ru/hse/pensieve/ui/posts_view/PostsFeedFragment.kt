@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.FragmentPostsFeedBinding
 import ru.hse.pensieve.posts.PostViewModel
@@ -16,8 +17,9 @@ import ru.hse.pensieve.posts.PostViewModel
 class PostsFeedFragment : Fragment() {
     private var _binding: FragmentPostsFeedBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: PostViewModel by activityViewModels()
     private lateinit var adapter: PostsAdapter
+
+    private lateinit var postsDataSource: PostsDataSource
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +48,7 @@ class PostsFeedFragment : Fragment() {
 
         val recyclerView = (binding.root as ViewGroup).getChildAt(0) as FragmentRecyclerView
 
-        adapter = PostsAdapter(childFragmentManager, viewModel)
+        adapter = PostsAdapter(childFragmentManager)
         recyclerView.apply {
             adapter = this@PostsFeedFragment.adapter
             layoutManager = LinearLayoutManager(requireContext()).apply {
@@ -61,7 +63,20 @@ class PostsFeedFragment : Fragment() {
             itemAnimator = null
         }
 
-        viewModel.allPosts.observe(viewLifecycleOwner) { posts ->
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisible = layoutManager.findLastVisibleItemPosition()
+                val total = adapter.itemCount
+
+                if (lastVisible >= total - 1) {
+                    postsDataSource.loadMorePosts()
+                }
+            }
+        })
+
+
+        postsDataSource.getPosts().observe(viewLifecycleOwner) { posts ->
             adapter.submitList(posts ?: emptyList())
         }
 
@@ -69,9 +84,7 @@ class PostsFeedFragment : Fragment() {
     }
 
     private fun loadPosts() {
-        lifecycleScope.launch {
-            viewModel.getAllPosts()
-        }
+        postsDataSource.loadMorePosts()
     }
 
     override fun onDestroyView() {
@@ -80,6 +93,12 @@ class PostsFeedFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = PostsFeedFragment()
+        fun newInstance(
+            dataSource: PostsDataSource
+        ): PostsFeedFragment {
+            return PostsFeedFragment().apply {
+                this.postsDataSource = dataSource
+            }
+        }
     }
 }

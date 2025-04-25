@@ -206,6 +206,14 @@ class PostViewModel : ViewModel() {
     }
 
     fun getPostById(id: UUID) {
-        _post.value = _allPosts.value?.find { it?.postId == id }
+        viewModelScope.launch {
+            try {
+                val post = postRepository.getPostById(id)
+                _post.value = post
+            } catch (e: Exception) {
+                println("getPostById: ${e.message}")
+                e.printStackTrace()
+            }
+        }
     }
 }
