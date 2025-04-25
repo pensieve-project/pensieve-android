@@ -56,7 +56,6 @@ class PostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllPosts()
         viewModel.getPostById(postId)
         viewModel.post.observe(viewLifecycleOwner) { post ->
             if (post != null) {
