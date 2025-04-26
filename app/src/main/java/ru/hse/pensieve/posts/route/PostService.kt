@@ -5,6 +5,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -40,7 +41,7 @@ interface PostService {
     @POST("/posts/like")
     fun likePost(@Body request: Like?): Deferred<Response<Void>>
 
-    @POST("/posts/unlike")
+    @DELETE("/posts/unlike")
     fun unlikePost(@Body request: Like?): Deferred<Response<Void>>
 
     @GET("/posts/liked")

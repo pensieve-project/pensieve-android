@@ -3,6 +3,7 @@ package ru.hse.pensieve.subscriptions.route
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -25,7 +26,7 @@ interface SubscriptionsService {
     @POST("/subscriptions/subscribe")
     fun subscribe(@Body request: SubscriptionRequest): Deferred<Response<Void>>
 
-    @POST("/subscriptions/unsubscribe")
+    @DELETE("/subscriptions/unsubscribe")
     fun unsubscribe(@Body request: SubscriptionRequest): Deferred<Response<Void>>
 
     @GET("/subscriptions/subscribed")
