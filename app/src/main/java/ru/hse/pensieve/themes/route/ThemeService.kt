@@ -3,6 +3,7 @@ package ru.hse.pensieve.themes.route
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -30,6 +31,6 @@ interface ThemeService {
     @POST("/themes/like")
     fun likeTheme(@Body request: Like?): Deferred<Response<Void>>
 
-    @POST("/themes/unlike")
+    @DELETE("/themes/unlike")
     fun unlikeTheme(@Body request: Like?): Deferred<Response<Void>>
 }
