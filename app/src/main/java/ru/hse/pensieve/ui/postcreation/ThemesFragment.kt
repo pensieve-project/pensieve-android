@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +45,7 @@ class ThemesFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity()).get(CreatePostViewModel::class.java)
 
         setupRecyclerView()
+        setupSearchView()
         setupButtons()
         updateNavigationButtons()
     }
@@ -68,6 +70,29 @@ class ThemesFragment : Fragment() {
         })
 
         searchViewModel.getAllThemes()
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    searchViewModel.searchThemes(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    searchViewModel.searchThemes(it)
+                }
+                return true
+            }
+        })
+
+        binding.searchView.setOnCloseListener {
+            searchViewModel.getAllThemes()
+            false
+        }
     }
 
     private fun setupButtons() {
