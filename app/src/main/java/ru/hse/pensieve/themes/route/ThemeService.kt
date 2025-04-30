@@ -19,9 +19,6 @@ interface ThemeService {
     @GET("/themes")
     fun getAllThemes(): Deferred<List<Theme>>
 
-    @GET("/themes/search")
-    fun searchThemes(@Query("query") query: String): Deferred<List<Theme>>
-
     @GET("/themes/title")
     fun getThemeTitle(@Query("themeId") themeId: UUID): Deferred<String>
 

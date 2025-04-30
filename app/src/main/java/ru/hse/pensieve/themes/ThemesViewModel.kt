@@ -24,26 +24,4 @@ class ThemesViewModel: ViewModel() {
             }
         }
     }
-
-    fun getAllThemes() {
-        viewModelScope.launch {
-            try {
-                val themes = themeRepository.getAllThemes()
-                _themes.value = themes
-            } catch (e: Exception) {
-                println("Exception: ${e.message}")
-            }
-        }
-    }
-
-    fun searchThemes(query: String) {
-        viewModelScope.launch {
-            try {
-                val themes = themeRepository.searchThemes(query)
-                _themes.value = themes
-            } catch (e: Exception) {
-                println("Exception: ${e.message}")
-            }
-        }
-    }
 }

@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivitySearchBinding
+import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.ui.themes.ThemeAdapter
@@ -14,7 +15,7 @@ import ru.hse.pensieve.ui.themes.ThemeAdapter
 class SearchActivity :  ToolbarActivity() {
     private lateinit var binding: ActivitySearchBinding
 
-    private val viewModel: ThemesViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
     private lateinit var adapter: ThemeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +36,7 @@ class SearchActivity :  ToolbarActivity() {
 
         binding.recyclerView.adapter = adapter
 
-        viewModel.themes.observe(this, { themes ->
+        searchViewModel.themes.observe(this, { themes ->
             if (themes != null) {
                 adapter = ThemeAdapter(themes) {
                     // click
@@ -44,28 +45,28 @@ class SearchActivity :  ToolbarActivity() {
             }
         })
 
-        viewModel.getAllThemes()
+        searchViewModel.getAllThemes()
     }
 
     private fun setupSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    viewModel.searchThemes(it)
+                    searchViewModel.searchThemes(it)
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    viewModel.searchThemes(it)
+                    searchViewModel.searchThemes(it)
                 }
                 return true
             }
         })
 
         binding.searchView.setOnCloseListener {
-            viewModel.getAllThemes()
+            searchViewModel.getAllThemes()
             false
         }
     }

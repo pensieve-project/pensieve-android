@@ -110,7 +110,7 @@ class FeedActivity :  ToolbarActivity() {
     private fun closeSearch() {
         isSearchActive = false
         binding.searchView.clearFocus()
-        searchViewModel.clearSearch()
+        searchViewModel.clearUsersSearch()
         showPostsFeed()
     }
 

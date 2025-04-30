@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.hse.pensieve.databinding.FragmentThemesBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
+import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.ui.themes.ThemeAdapter
@@ -20,6 +21,7 @@ class ThemesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var themesViewModel: ThemesViewModel
+    private lateinit var searchViewModel: SearchViewModel
     private lateinit var postViewModel: CreatePostViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ThemeAdapter
@@ -38,6 +40,7 @@ class ThemesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         themesViewModel = ViewModelProvider(requireActivity()).get(ThemesViewModel::class.java)
+        searchViewModel = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
         postViewModel = ViewModelProvider(requireActivity()).get(CreatePostViewModel::class.java)
 
         setupRecyclerView()
@@ -54,7 +57,7 @@ class ThemesFragment : Fragment() {
 
         binding.recyclerView.adapter = adapter
 
-        themesViewModel.themes.observe(viewLifecycleOwner, { themes ->
+        searchViewModel.themes.observe(viewLifecycleOwner, { themes ->
             if (themes != null) {
                 adapter = ThemeAdapter(themes) { theme ->
                     binding.btnNext.visibility = View.VISIBLE
@@ -64,7 +67,7 @@ class ThemesFragment : Fragment() {
             }
         })
 
-        themesViewModel.getAllThemes()
+        searchViewModel.getAllThemes()
     }
 
     private fun setupButtons() {
