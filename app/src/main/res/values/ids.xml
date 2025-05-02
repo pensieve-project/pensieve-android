@@ -6,4 +6,8 @@
     <item name="registerButton" type="id" />
     <item name="usernameEditText" type="id" />
     <item name="toolbar" type="id" />
+    <item name="text_business_links" type="id" />
+    <item name="text_business_phones" type="id" />
+    <item name="searchEditText" type="id" />
+    <item name="searchButton" type="id" />
 </resources>

@@ -5,6 +5,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModel
 import ru.hse.pensieve.posts.repository.PostRepository
 import androidx.lifecycle.MutableLiveData
+import ru.hse.pensieve.posts.models.Point
 import ru.hse.pensieve.themes.models.Theme
 import java.io.File
 import java.io.FileOutputStream
@@ -17,14 +18,15 @@ class CreatePostViewModel: ViewModel() {
     val postThemeTitle = MutableLiveData<String>()
     val postText = MutableLiveData<String>()
     val postPhoto = MutableLiveData<Uri>()
+    val postLocation = MutableLiveData<Point>()
 
     suspend fun createPost(photo: File) {
         try {
             println(photo)
             if (postTheme.value == null) {
-                postRepository.createPostInNewTheme(postText.value ?: "", photo,postThemeTitle.value ?: "")
+                postRepository.createPostInNewTheme(postText.value ?: "", photo,postThemeTitle.value ?: "", postLocation.value!!)
             } else {
-                postRepository.createPostInExistingTheme(postText.value ?: "", photo, postTheme.value!!.themeId!!)
+                postRepository.createPostInExistingTheme(postText.value ?: "", photo, postTheme.value!!.themeId!!, postLocation.value!!)
             }
         } catch (e: Exception) {
             if (e is kotlinx.coroutines.CancellationException) {

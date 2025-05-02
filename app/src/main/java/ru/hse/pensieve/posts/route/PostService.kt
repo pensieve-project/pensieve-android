@@ -22,6 +22,7 @@ interface PostService {
     @POST("/posts")
     fun createPost(@Part("text") text: RequestBody,
                    @Part photo: MultipartBody.Part,
+                   @Part("location") location: RequestBody,
                    @Part("authorId") authorId: RequestBody,
                    @Part("themeId") themeId: RequestBody
     ): Deferred<Post>

@@ -125,10 +125,8 @@
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <include layout="@layout/fragment_posts_grid" />
+                android:layout_weight="1"
+                android:layout_height="0dp">
             </FrameLayout>
         </LinearLayout>
     </ScrollView>

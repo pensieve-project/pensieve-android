@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
 
 class ProfileActivity :  ToolbarActivity() {
@@ -22,6 +23,7 @@ class ProfileActivity :  ToolbarActivity() {
     private val profileRepository = ProfileRepository()
 
     private lateinit var postsGridFragment: PostsGridFragment
+    private lateinit var postsOnMapFragment: PostsOnMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,14 @@ class ProfileActivity :  ToolbarActivity() {
         val userId = UserPreferences.getUserId()
         if (userId != null) {
             loadProfile(userId)
+        }
+
+        binding.locationsButton.setOnClickListener {
+            showMap()
+        }
+
+        binding.postsButton.setOnClickListener {
+            showGrid()
         }
 
         setSupportActionBar(binding.root.findViewById(R.id.my_toolbar))
@@ -69,10 +79,19 @@ class ProfileActivity :  ToolbarActivity() {
         }
     }
 
-    fun showGrid() {
+    private fun showGrid() {
         postsGridFragment = PostsGridFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsGridFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun showMap() {
+        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS")
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, postsOnMapFragment)
             .addToBackStack(null)
             .commit()
     }

@@ -15,6 +15,8 @@ import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
 class PostViewModel : ViewModel() {
+    enum class PostsType { USER_POSTS, ALL_POSTS }
+
     private val postRepository = PostRepository()
     private val themeRepository = ThemeRepository()
     private val profileRepository = ProfileRepository()
@@ -50,6 +52,30 @@ class PostViewModel : ViewModel() {
 
     private val _allPosts = MutableLiveData<List<Post?>?>()
     val allPosts: MutableLiveData<List<Post?>?> get() = _allPosts
+
+    fun loadPosts(type: PostsType, userId: UUID? = null) {
+        viewModelScope.launch {
+            _posts.value = handleRequest {
+                when (type) {
+                    PostsType.USER_POSTS -> postRepository.getPostsByAuthor(userId!!)
+                    PostsType.ALL_POSTS -> postRepository.getAllPosts()
+                }
+            } ?: emptyList()
+        }
+    }
+
+    private suspend fun <T> handleRequest(block: suspend () -> T): T? {
+        return try { block() }
+        catch (e: Exception) {
+            logError(e)
+            null
+        }
+    }
+
+    private fun logError(e: Exception) {
+        println("Error: ${e.message}")
+        e.printStackTrace()
+    }
 
     suspend fun getCurrentPost(currentUserId: UUID, postNumber: Int) {
         println("id: " + currentUserId)
@@ -89,7 +115,7 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllUsersPosts(currentUserId: UUID) {
+    fun getAllUsersPosts(currentUserId: UUID) {
         viewModelScope.launch {
             try {
                 val posts = postRepository.getPostsByAuthor(currentUserId)
@@ -114,7 +140,7 @@ class PostViewModel : ViewModel() {
 
     fun loadLikeStatus(postId: UUID) {
         viewModelScope.launch {
-            val hasLiked = postRepository.hasUserLikedPost(postId, userId!!)
+            val hasLiked = postRepository.hasUserLikedPost(userId!!, postId)
             println(hasLiked)
             _isLiked.value = hasLiked
         }
@@ -123,10 +149,10 @@ class PostViewModel : ViewModel() {
     fun toggleLike(postId: UUID, isLiked: Boolean) {
         viewModelScope.launch {
             if (isLiked) {
-                postRepository.unlikePost(postId, userId!!)
+                postRepository.unlikePost(userId!!, postId)
                 _likesCount.value = (_likesCount.value ?: 0) - 1
             } else {
-                postRepository.likePost(postId, userId!!)
+                postRepository.likePost(userId!!, postId)
                 _likesCount.value = (_likesCount.value ?: 0) + 1
             }
             _isLiked.value = !isLiked
