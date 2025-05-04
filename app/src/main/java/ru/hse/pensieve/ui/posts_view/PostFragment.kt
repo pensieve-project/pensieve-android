@@ -69,6 +69,10 @@ class PostFragment : Fragment() {
                     binding.location.text = post.location.latitude.toString() + " " + post.location.longitude.toString()
                     binding.location.visibility = View.VISIBLE
                 }
+                if (post.location != null) {
+                    binding.location.text = post.location.latitude.toString() + " " + post.location.longitude.toString()
+                    binding.location.visibility = View.VISIBLE
+                }
                 val photoByteArray = post.photo
                 val bitmap = photoByteArray?.toBitmap()
                 binding.imgPhoto.setImageBitmap(bitmap)
