@@ -27,6 +27,7 @@ class ThemeAdapter(
 
     override fun getItemCount(): Int = themes.size
     val currentList: List<Theme> get() = themes
+    val currentLikedThemes: Set<UUID> get() = likedThemes
     private var selectedPosition = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThemeViewHolder {

@@ -45,6 +45,7 @@ class ThemesFragment : Fragment() {
         setupObservers()
 
         themesViewModel.getAllThemes()
+        themesViewModel.getLikedThemes()
     }
 
     private fun setupRecyclerView() {
@@ -56,6 +57,10 @@ class ThemesFragment : Fragment() {
                 selectedTheme = theme
             },
             onLikeClick = { themeId, isLiked ->
+                if (!isLiked) {
+                    val currentLiked = adapter.currentLikedThemes - themeId
+                    adapter.updateData(newLikedThemes = currentLiked)
+                }
                 themesViewModel.toggleLike(themeId, isLiked)
             },
             likedThemes = emptySet(),
@@ -68,10 +73,11 @@ class ThemesFragment : Fragment() {
     private fun setupObservers() {
         themesViewModel.themes.observe(viewLifecycleOwner) { themes ->
             themes?.let {
-                val authorIds = themes.map { it.authorId!! }.toSet()
-                themesViewModel.loadAuthorUsernames(authorIds)
-
-                adapter.updateData(newThemes = themes)
+                val authorIds = it.mapNotNull { theme -> theme.authorId }.toSet()
+                if (authorIds.isNotEmpty()) {
+                    themesViewModel.loadAuthorUsernames(authorIds)
+                }
+                adapter.updateData(newThemes = it)
             }
         }
 
@@ -83,7 +89,7 @@ class ThemesFragment : Fragment() {
 
         themesViewModel.likedThemes.observe(viewLifecycleOwner) { likedThemes ->
             likedThemes?.let {
-                val likedThemeIds = likedThemes.map { it.themeId!! }.toSet()
+                val likedThemeIds = it.mapNotNull { theme -> theme.themeId }.toSet()
                 adapter.updateData(newLikedThemes = likedThemeIds)
             }
         }
