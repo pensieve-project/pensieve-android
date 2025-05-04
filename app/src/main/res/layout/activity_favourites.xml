@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:text="@string/favourites"
-        android:layout_height="120dp"
-        android:layout_width="320dp"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:textColor="@color/brown950"
-        android:gravity="center" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:text="@string/favourites"
+            android:layout_height="120dp"
+            android:layout_width="320dp"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:textColor="@color/brown950"
+            android:gravity="center" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/toolbar_container"
+            android:padding="10dp"
+            android:layout_marginTop="10dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"/>
+        </FrameLayout>
+
+    </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"></FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-    <include layout="@layout/toolbar" />
-</LinearLayout>
+        <include layout="@layout/toolbar" />
+    </FrameLayout>
+
+</RelativeLayout>

@@ -6,7 +6,6 @@ import android.widget.ImageButton
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityProfileBinding
 import ru.hse.pensieve.ui.ToolbarActivity
-import ru.hse.pensieve.ui.posts_view.PostFragment
 import ru.hse.pensieve.ui.posts_view.PostsGridFragment
 import ru.hse.pensieve.profiles.repository.ProfileRepository
 import ru.hse.pensieve.utils.UserPreferences
