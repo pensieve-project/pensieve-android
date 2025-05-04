@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.hse.pensieve.ui.albums.AlbumsFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
 
@@ -24,6 +25,7 @@ class ProfileActivity :  ToolbarActivity() {
 
     private lateinit var postsGridFragment: PostsGridFragment
     private lateinit var postsOnMapFragment: PostsOnMapFragment
+    private lateinit var albumsFragment: AlbumsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,10 @@ class ProfileActivity :  ToolbarActivity() {
 
         binding.postsButton.setOnClickListener {
             showGrid()
+        }
+
+        binding.albumsButton.setOnClickListener {
+            showAlbums()
         }
 
         setSupportActionBar(binding.root.findViewById(R.id.my_toolbar))
@@ -92,6 +98,15 @@ class ProfileActivity :  ToolbarActivity() {
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsOnMapFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun showAlbums() {
+        albumsFragment = AlbumsFragment()
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, albumsFragment)
             .addToBackStack(null)
             .commit()
     }
