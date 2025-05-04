@@ -1,5 +1,6 @@
 package ru.hse.pensieve.posts.repository
 
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -9,6 +10,8 @@ import ru.hse.pensieve.api.Client
 import ru.hse.pensieve.posts.models.Comment
 import ru.hse.pensieve.posts.models.CommentRequest
 import ru.hse.pensieve.posts.models.Like
+import ru.hse.pensieve.posts.models.LocationDto
+import ru.hse.pensieve.posts.models.Point
 import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.posts.route.PostService
 import ru.hse.pensieve.themes.models.ThemeRequest
@@ -23,19 +26,25 @@ class PostRepository {
     private val themesService = Client.getInstanceOfService(ThemeService::class.java)
     private val userId: UUID = UserPreferences.getUserId()!!
 
-    suspend fun createPostInExistingTheme(text: String, photo: File, themeId: UUID): Post {
+    suspend fun createPostInExistingTheme(text: String, photo: File, themeId: UUID, location: Point): Post {
         val filePart = MultipartBody.Part.createFormData(
             "photo", photo.getName(), RequestBody.create(
                 MediaType.parse("image/*"), photo
             )
         )
         val textPart = RequestBody.create(MediaType.parse("text/plain"), text)
+        val locationDto = LocationDto(location.latitude, location.longitude)
+        val locationJson = Gson().toJson(locationDto)
+        val locationPart = RequestBody.create(
+            MediaType.parse("application/json"),
+            locationJson
+        )
         val userIdPart = RequestBody.create(MediaType.parse("text/plain"), userId.toString())
         val themeIdPart = RequestBody.create(MediaType.parse("text/plain"), themeId.toString())
-        return postService.createPost(textPart, filePart, userIdPart, themeIdPart).await()
+        return postService.createPost(textPart, filePart, locationPart, userIdPart, themeIdPart).await()
     }
 
-    suspend fun createPostInNewTheme(text: String, photo: File, themeTitle: String): Post {
+    suspend fun createPostInNewTheme(text: String, photo: File, themeTitle: String, location: Point): Post {
         val filePart = MultipartBody.Part.createFormData(
             "photo", photo.getName(), RequestBody.create(
                 MediaType.parse("image/*"), photo
@@ -43,11 +52,17 @@ class PostRepository {
         )
         println(filePart)
         val textPart = RequestBody.create(MediaType.parse("text/plain"), text)
+        val locationDto = LocationDto(location.latitude, location.longitude)
+        val locationJson = Gson().toJson(locationDto)
+        val locationPart = RequestBody.create(
+            MediaType.parse("application/json"),
+            locationJson
+        )
         val userIdPart = RequestBody.create(MediaType.parse("text/plain"), userId.toString())
         return withContext(Dispatchers.IO) {
             val theme = themesService.createTheme(ThemeRequest(userId, themeTitle)).await()
             val themeIdPart = RequestBody.create(MediaType.parse("text/plain"), theme.themeId.toString())
-            postService.createPost(textPart, filePart, userIdPart, themeIdPart).await()
+            postService.createPost(textPart, filePart, locationPart, userIdPart, themeIdPart).await()
         }
     }
 

@@ -7,13 +7,15 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivitySearchBinding
+import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.ui.themes.ThemeAdapter
 
 class SearchActivity :  ToolbarActivity() {
     private lateinit var binding: ActivitySearchBinding
-    private val viewModel: ThemesViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    private val themeViewModel: ThemesViewModel by viewModels()
     private lateinit var adapter: ThemeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +28,8 @@ class SearchActivity :  ToolbarActivity() {
         setupSearchView()
         setupObservers()
 
-        viewModel.getAllThemes()
-        viewModel.getLikedThemes()
+        searchViewModel.getAllThemes()
+        themeViewModel.getLikedThemes()
     }
 
     private fun setupRecyclerView() {
@@ -38,7 +40,7 @@ class SearchActivity :  ToolbarActivity() {
                 // click
             },
             onLikeClick = { themeId, isLiked ->
-                viewModel.toggleLike(themeId, isLiked)
+                themeViewModel.toggleLike(themeId, isLiked)
             },
             likedThemes = emptySet(),
             authorUsernames = emptyMap()
@@ -48,18 +50,18 @@ class SearchActivity :  ToolbarActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.themes.observe(this) { themes ->
+        themeViewModel.themes.observe(this) { themes ->
             themes?.let {
                 adapter.updateData(newThemes = it)
 
                 val authorIds = it.mapNotNull { theme -> theme.authorId }.toSet()
                 if (authorIds.isNotEmpty()) {
-                    viewModel.loadAuthorUsernames(authorIds)
+                    themeViewModel.loadAuthorUsernames(authorIds)
                 }
             }
         }
 
-        viewModel.authorUsernames.observe(this) { usernamesMap ->
+        themeViewModel.authorUsernames.observe(this) { usernamesMap ->
             usernamesMap?.let { map ->
                 val updatedPositions = adapter.currentList
                     .mapIndexedNotNull { index, theme ->
@@ -71,7 +73,7 @@ class SearchActivity :  ToolbarActivity() {
             }
         }
 
-        viewModel.likedThemes.observe(this) { likedThemes ->
+        themeViewModel.likedThemes.observe(this) { likedThemes ->
             likedThemes?.let {
                 val likedThemeIds = it.map { theme -> theme.themeId!! }.toSet()
                 adapter.updateData(newLikedThemes = likedThemeIds)
@@ -83,21 +85,21 @@ class SearchActivity :  ToolbarActivity() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    viewModel.searchThemes(it)
+                    searchViewModel.searchThemes(it)
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    viewModel.searchThemes(it)
+                    searchViewModel.searchThemes(it)
                 }
                 return true
             }
         })
 
         binding.searchView.setOnCloseListener {
-            viewModel.getAllThemes()
+            searchViewModel.getAllThemes()
             false
         }
     }

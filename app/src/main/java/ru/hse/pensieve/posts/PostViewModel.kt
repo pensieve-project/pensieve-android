@@ -15,6 +15,8 @@ import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
 class PostViewModel : ViewModel() {
+    enum class PostsType { USER_POSTS, ALL_POSTS }
+
     private val postRepository = PostRepository()
     private val themeRepository = ThemeRepository()
     private val profileRepository = ProfileRepository()
@@ -50,6 +52,30 @@ class PostViewModel : ViewModel() {
 
     private val _allPosts = MutableLiveData<List<Post?>?>()
     val allPosts: MutableLiveData<List<Post?>?> get() = _allPosts
+
+    fun loadPosts(type: PostsType, userId: UUID? = null) {
+        viewModelScope.launch {
+            _posts.value = handleRequest {
+                when (type) {
+                    PostsType.USER_POSTS -> postRepository.getPostsByAuthor(userId!!)
+                    PostsType.ALL_POSTS -> postRepository.getAllPosts()
+                }
+            } ?: emptyList()
+        }
+    }
+
+    private suspend fun <T> handleRequest(block: suspend () -> T): T? {
+        return try { block() }
+        catch (e: Exception) {
+            logError(e)
+            null
+        }
+    }
+
+    private fun logError(e: Exception) {
+        println("Error: ${e.message}")
+        e.printStackTrace()
+    }
 
     suspend fun getCurrentPost(currentUserId: UUID, postNumber: Int) {
         println("id: " + currentUserId)
@@ -89,7 +115,7 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllUsersPosts(currentUserId: UUID) {
+    fun getAllUsersPosts(currentUserId: UUID) {
         viewModelScope.launch {
             try {
                 val posts = postRepository.getPostsByAuthor(currentUserId)
@@ -206,6 +232,14 @@ class PostViewModel : ViewModel() {
     }
 
     fun getPostById(id: UUID) {
-        _post.value = _allPosts.value?.find { it?.postId == id }
+        viewModelScope.launch {
+            try {
+                val post = postRepository.getPostById(id)
+                _post.value = post
+            } catch (e: Exception) {
+                println("getPostById: ${e.message}")
+                e.printStackTrace()
+            }
+        }
     }
 }

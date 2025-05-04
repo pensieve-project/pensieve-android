@@ -7,8 +7,7 @@ import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.posts.models.Post
 
 class PostsAdapter(
-    private val fragmentManager: FragmentManager,
-    private val viewModel: PostViewModel
+    private val fragmentManager: FragmentManager
 ) : RecyclerView.Adapter<FragmentViewHolder>() {
 
     private var posts: List<Post> = emptyList()

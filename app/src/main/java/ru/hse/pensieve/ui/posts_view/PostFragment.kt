@@ -53,7 +53,6 @@ class PostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllPosts()
         viewModel.getPostById(postId)
         viewModel.post.observe(viewLifecycleOwner) { post ->
             if (post != null) {
@@ -65,6 +64,10 @@ class PostFragment : Fragment() {
                 viewModel.getThemeTitle(post.themeId!!)
                 viewModel.themeTitle.observe(viewLifecycleOwner) {
                         themeTitle -> binding.theme.text = themeTitle
+                }
+                if (post.location != null) {
+                    binding.location.text = post.location.latitude.toString() + " " + post.location.longitude.toString()
+                    binding.location.visibility = View.VISIBLE
                 }
                 val photoByteArray = post.photo
                 val bitmap = photoByteArray?.toBitmap()

@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.databinding.FragmentThemesBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
+import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.ui.themes.ThemeAdapter
@@ -19,6 +21,7 @@ class ThemesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var themesViewModel: ThemesViewModel
+    private lateinit var searchViewModel: SearchViewModel
     private lateinit var postViewModel: CreatePostViewModel
     private lateinit var adapter: ThemeAdapter
 
@@ -37,14 +40,16 @@ class ThemesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         themesViewModel = ViewModelProvider(requireActivity())[ThemesViewModel::class.java]
+        searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         postViewModel = ViewModelProvider(requireActivity())[CreatePostViewModel::class.java]
 
         setupRecyclerView()
+        setupSearchView()
         setupButtons()
         updateNavigationButtons()
         setupObservers()
 
-        themesViewModel.getAllThemes()
+        searchViewModel.getAllThemes()
         themesViewModel.getLikedThemes()
     }
 
@@ -92,6 +97,29 @@ class ThemesFragment : Fragment() {
                 val likedThemeIds = it.mapNotNull { theme -> theme.themeId }.toSet()
                 adapter.updateData(newLikedThemes = likedThemeIds)
             }
+        }
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    searchViewModel.searchThemes(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    searchViewModel.searchThemes(it)
+                }
+                return true
+            }
+        })
+
+        binding.searchView.setOnCloseListener {
+            searchViewModel.getAllThemes()
+            false
         }
     }
 
