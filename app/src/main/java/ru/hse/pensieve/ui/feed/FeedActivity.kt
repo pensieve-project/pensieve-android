@@ -39,7 +39,9 @@ class FeedActivity :  ToolbarActivity() {
         binding = ActivityFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        usersSearchFragment = UsersSearchFragment.newInstance()
+        usersSearchFragment = UsersSearchFragment.newInstance({
+            // перейти на страницу
+        }, false)
         subscriptionsFragment = PostsFeedFragment.newInstance(SubscriptionsDataSource(feedViewModel))
 
         supportFragmentManager.beginTransaction()

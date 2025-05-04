@@ -9,11 +9,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.databinding.FragmentUsersSearchBinding
 import ru.hse.pensieve.search.SearchViewModel
+import ru.hse.pensieve.search.models.User
 
-class UsersSearchFragment : Fragment() {
+class UsersSearchFragment(
+    private val onItemClick: (Set<User>) -> Unit,
+    private val isMultiSelectMode: Boolean
+) : Fragment() {
     private var _binding: FragmentUsersSearchBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: UsersAdapter
+    lateinit var adapter: UsersAdapter
     private val viewModel: SearchViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -28,9 +32,7 @@ class UsersSearchFragment : Fragment() {
 
     private fun setupAdapter() {
         binding.usersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = UsersAdapter(emptyList()) {
-            // click
-        }
+        adapter = UsersAdapter(emptyList(), onItemClick, isMultiSelectMode)
 
         binding.usersRecyclerView.adapter = adapter
 
@@ -45,6 +47,6 @@ class UsersSearchFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = UsersSearchFragment()
+        fun newInstance(onItemClick: (Set<User>) -> Unit, isMultiSelectMode: Boolean) = UsersSearchFragment(onItemClick, isMultiSelectMode)
     }
 }

@@ -5,15 +5,19 @@ import ru.hse.pensieve.search.models.User
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ItemUserBinding
+import ru.hse.pensieve.ui.themes.ThemeAdapter.ThemeViewHolder
 
 class UsersAdapter(
     private var users: List<User>,
-    private val onItemClick: (User) -> Unit
+    private val onItemClick: (Set<User>) -> Unit,
+    private var isMultiSelectMode: Boolean,
 ) : RecyclerView.Adapter<UsersAdapter.UserViewHolder>() {
 
     override fun getItemCount(): Int = users.size
-    private var selectedPosition = RecyclerView.NO_POSITION
+    private val selectedUsers = mutableSetOf<User>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -25,9 +29,61 @@ class UsersAdapter(
         val user = users[position]
         holder.bind(user)
 
+        changeUserCard(holder, selectedUsers.contains(user))
+
         holder.itemView.setOnClickListener {
-            onItemClick(user)
+            handleUserClick(user)
         }
+    }
+
+    private fun handleUserClick(user: User) {
+        if (isMultiSelectMode) {
+            toggleUserSelection(user)
+        } else {
+            selectSingleUser(user)
+        }
+    }
+
+    private fun toggleUserSelection(user: User) {
+        if (selectedUsers.contains(user)) {
+            selectedUsers.remove(user)
+        } else {
+            selectedUsers.add(user)
+        }
+        notifyItemChanged(users.indexOf(user))
+        onItemClick(selectedUsers)
+    }
+
+    private fun selectSingleUser(user: User) {
+        val previousSelected = selectedUsers.toSet()
+        selectedUsers.clear()
+        selectedUsers.add(user)
+
+        previousSelected.forEach { oldUser ->
+            notifyItemChanged(users.indexOf(oldUser))
+        }
+        notifyItemChanged(users.indexOf(user))
+        onItemClick(selectedUsers)
+    }
+
+    private fun changeUserCard(holder: UserViewHolder, selected: Boolean) {
+        val majorColor = if (selected) {
+            R.color.brown950
+        } else {
+            R.color.beige50
+        }
+        val minorColor = if (selected) {
+            R.color.beige50
+        } else {
+            R.color.brown950
+        }
+
+        holder.binding.userCard.setBackgroundColor(
+            ContextCompat.getColor(holder.itemView.context, majorColor)
+        )
+        holder.binding.usernameTextView.setTextColor(
+            ContextCompat.getColor(holder.itemView.context, minorColor)
+        )
     }
 
     fun updateUsers(newUsers: List<User>) {

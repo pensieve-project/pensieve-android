@@ -72,6 +72,7 @@ class PostFragment : Fragment() {
                     binding.location.text = post.location.latitude.toString() + " " + post.location.longitude.toString()
                     binding.location.visibility = View.VISIBLE
                 }
+                binding.coAuthors.text = post.coAuthors.toString()
                 val photoByteArray = post.photo
                 val bitmap = photoByteArray?.toBitmap()
                 binding.imgPhoto.setImageBitmap(bitmap)

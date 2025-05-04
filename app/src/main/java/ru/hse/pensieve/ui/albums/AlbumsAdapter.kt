@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.hse.pensieve.albums.models.Album
 import ru.hse.pensieve.databinding.ItemAlbumBinding
 import ru.hse.pensieve.search.models.User
+import java.util.UUID
 
 class AlbumsAdapter(
     private var albums: List<Album>,
-    private val onItemClick: (Album) -> Unit
+    private val onItemClick: (Album) -> Unit,
+    private val getUserNames: (Set<UUID>?) -> String
 ) : RecyclerView.Adapter<AlbumsAdapter.AlbumViewHolder>() {
 
     override fun getItemCount(): Int = albums.size
-    private var selectedPosition = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,9 +36,9 @@ class AlbumsAdapter(
         notifyDataSetChanged()
     }
 
-    class AlbumViewHolder(val binding: ItemAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class AlbumViewHolder(val binding: ItemAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(album: Album) {
-            binding.usernamesTextView.text = album.coAuthors.toString()
+            binding.usernamesTextView.text = getUserNames(album.coAuthors)
         }
     }
 }
