@@ -13,7 +13,6 @@ import ru.hse.pensieve.ui.themes.ThemeAdapter
 
 class SearchActivity :  ToolbarActivity() {
     private lateinit var binding: ActivitySearchBinding
-
     private val viewModel: ThemesViewModel by viewModels()
     private lateinit var adapter: ThemeAdapter
 
@@ -25,26 +24,59 @@ class SearchActivity :  ToolbarActivity() {
         setupToolBar()
         setupRecyclerView()
         setupSearchView()
+        setupObservers()
+
+        viewModel.getAllThemes()
+        viewModel.getLikedThemes()
     }
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = ThemeAdapter(emptyList()) {
-            // click
-        }
+        adapter = ThemeAdapter(
+            themes = emptyList(),
+            onItemClick = {
+                // click
+            },
+            onLikeClick = { themeId, isLiked ->
+                viewModel.toggleLike(themeId, isLiked)
+            },
+            likedThemes = emptySet(),
+            authorUsernames = emptyMap()
+        )
 
         binding.recyclerView.adapter = adapter
+    }
 
-        viewModel.themes.observe(this, { themes ->
-            if (themes != null) {
-                adapter = ThemeAdapter(themes) {
-                    // click
+    private fun setupObservers() {
+        viewModel.themes.observe(this) { themes ->
+            themes?.let {
+                adapter.updateData(newThemes = it)
+
+                val authorIds = it.mapNotNull { theme -> theme.authorId }.toSet()
+                if (authorIds.isNotEmpty()) {
+                    viewModel.loadAuthorUsernames(authorIds)
                 }
-                binding.recyclerView.adapter = adapter
             }
-        })
+        }
 
-        viewModel.getAllThemes()
+        viewModel.authorUsernames.observe(this) { usernamesMap ->
+            usernamesMap?.let { map ->
+                val updatedPositions = adapter.currentList
+                    .mapIndexedNotNull { index, theme ->
+                        theme.authorId?.takeIf { map.containsKey(it) }?.let { index }
+                    }
+
+                adapter.updateAuthorUsernames(map)
+                updatedPositions.forEach { pos -> adapter.notifyItemChanged(pos) }
+            }
+        }
+
+        viewModel.likedThemes.observe(this) { likedThemes ->
+            likedThemes?.let {
+                val likedThemeIds = it.map { theme -> theme.themeId!! }.toSet()
+                adapter.updateData(newLikedThemes = likedThemeIds)
+            }
+        }
     }
 
     private fun setupSearchView() {

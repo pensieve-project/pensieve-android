@@ -114,7 +114,7 @@ class PostViewModel : ViewModel() {
 
     fun loadLikeStatus(postId: UUID) {
         viewModelScope.launch {
-            val hasLiked = postRepository.hasUserLikedPost(postId, userId!!)
+            val hasLiked = postRepository.hasUserLikedPost(userId!!, postId)
             println(hasLiked)
             _isLiked.value = hasLiked
         }
@@ -123,10 +123,10 @@ class PostViewModel : ViewModel() {
     fun toggleLike(postId: UUID, isLiked: Boolean) {
         viewModelScope.launch {
             if (isLiked) {
-                postRepository.unlikePost(postId, userId!!)
+                postRepository.unlikePost(userId!!, postId)
                 _likesCount.value = (_likesCount.value ?: 0) - 1
             } else {
-                postRepository.likePost(postId, userId!!)
+                postRepository.likePost(userId!!, postId)
                 _likesCount.value = (_likesCount.value ?: 0) + 1
             }
             _isLiked.value = !isLiked

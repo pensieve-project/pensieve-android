@@ -8,12 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentPostBinding
 import ru.hse.pensieve.posts.PostViewModel
-import ru.hse.pensieve.profiles.repository.ProfileRepository
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -67,7 +64,7 @@ class PostFragment : Fragment() {
                 }
                 viewModel.getThemeTitle(post.themeId!!)
                 viewModel.themeTitle.observe(viewLifecycleOwner) {
-                    themeTitle -> binding.theme.text = themeTitle
+                        themeTitle -> binding.theme.text = themeTitle
                 }
                 val photoByteArray = post.photo
                 val bitmap = photoByteArray?.toBitmap()

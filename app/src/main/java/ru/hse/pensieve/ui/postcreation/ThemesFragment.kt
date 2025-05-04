@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ru.hse.pensieve.databinding.FragmentThemesBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
@@ -21,15 +20,15 @@ class ThemesFragment : Fragment() {
 
     private lateinit var themesViewModel: ThemesViewModel
     private lateinit var postViewModel: CreatePostViewModel
-    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ThemeAdapter
 
     private lateinit var selectedTheme: Theme
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThemesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,34 +36,57 @@ class ThemesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        themesViewModel = ViewModelProvider(requireActivity()).get(ThemesViewModel::class.java)
-        postViewModel = ViewModelProvider(requireActivity()).get(CreatePostViewModel::class.java)
+        themesViewModel = ViewModelProvider(requireActivity())[ThemesViewModel::class.java]
+        postViewModel = ViewModelProvider(requireActivity())[CreatePostViewModel::class.java]
 
         setupRecyclerView()
         setupButtons()
         updateNavigationButtons()
+        setupObservers()
+
+        themesViewModel.getAllThemes()
     }
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = ThemeAdapter(emptyList()) { theme ->
-            binding.btnNext.visibility = View.VISIBLE
-            selectedTheme = theme
-        }
+        adapter = ThemeAdapter(
+            themes = emptyList(),
+            onItemClick = { theme ->
+                binding.btnNext.visibility = View.VISIBLE
+                selectedTheme = theme
+            },
+            onLikeClick = { themeId, isLiked ->
+                themesViewModel.toggleLike(themeId, isLiked)
+            },
+            likedThemes = emptySet(),
+            authorUsernames = emptyMap()
+        )
 
         binding.recyclerView.adapter = adapter
+    }
 
-        themesViewModel.themes.observe(viewLifecycleOwner, { themes ->
-            if (themes != null) {
-                adapter = ThemeAdapter(themes) { theme ->
-                    binding.btnNext.visibility = View.VISIBLE
-                    selectedTheme = theme
-                }
-                binding.recyclerView.adapter = adapter
+    private fun setupObservers() {
+        themesViewModel.themes.observe(viewLifecycleOwner) { themes ->
+            themes?.let {
+                val authorIds = themes.map { it.authorId!! }.toSet()
+                themesViewModel.loadAuthorUsernames(authorIds)
+
+                adapter.updateData(newThemes = themes)
             }
-        })
+        }
 
-        themesViewModel.getAllThemes()
+        themesViewModel.authorUsernames.observe(viewLifecycleOwner) { usernamesMap ->
+            usernamesMap?.let {
+                adapter.updateData(newAuthorUsernames = usernamesMap)
+            }
+        }
+
+        themesViewModel.likedThemes.observe(viewLifecycleOwner) { likedThemes ->
+            likedThemes?.let {
+                val likedThemeIds = likedThemes.map { it.themeId!! }.toSet()
+                adapter.updateData(newLikedThemes = likedThemeIds)
+            }
+        }
     }
 
     private fun setupButtons() {

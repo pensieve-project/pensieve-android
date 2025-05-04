@@ -1,8 +1,7 @@
 package ru.hse.pensieve.themes.repository
 
-import kotlinx.coroutines.Deferred
 import ru.hse.pensieve.api.Client
-import ru.hse.pensieve.posts.models.Like
+import ru.hse.pensieve.themes.models.Like
 import ru.hse.pensieve.themes.route.ThemeService
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.themes.models.ThemeRequest
@@ -21,6 +20,10 @@ class ThemeRepository {
         return themeApi.getAllThemes().await()
     }
 
+    suspend fun getLikedThemes(authorId: UUID): List<Theme> {
+        return themeApi.getLikedThemes(authorId).await()
+    }
+
     suspend fun searchThemes(query: String): List<Theme> {
         return themeApi.searchThemes(query).await()
     }
@@ -30,7 +33,7 @@ class ThemeRepository {
     }
 
     suspend fun hasUserLikedTheme(authorId: UUID, themeId: UUID) : Boolean {
-        return themeApi.hasUserLikedTheme(Like(authorId, themeId)).await()
+        return themeApi.hasUserLikedTheme(authorId, themeId).await()
     }
 
     suspend fun likeTheme(authorId: UUID, themeId: UUID): Boolean {
