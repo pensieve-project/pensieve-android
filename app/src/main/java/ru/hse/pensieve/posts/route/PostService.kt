@@ -44,7 +44,7 @@ interface PostService {
     fun likePost(@Body request: Like?): Deferred<Response<Void>>
 
     @DELETE("/posts/unlike")
-    fun unlikePost(@Body request: Like?): Deferred<Response<Void>>
+    fun unlikePost(@Query("authorId") authorId: UUID, @Query("postId") postId: UUID): Deferred<Response<Void>>
 
     @GET("/posts/liked")
     fun hasUserLikedPost(@Query("authorId") authorId: UUID?, @Query("postId") postId: UUID?): Deferred<Boolean>

@@ -119,7 +119,7 @@ class PostRepository {
     }
 
     suspend fun unlikePost(authorId: UUID, postId: UUID): Boolean {
-        return postService.unlikePost(Like(authorId, postId)).await().isSuccessful
+        return postService.unlikePost(authorId, postId).await().isSuccessful
     }
 
     suspend fun hasUserLikedPost(authorId: UUID, postId: UUID) : Boolean {
