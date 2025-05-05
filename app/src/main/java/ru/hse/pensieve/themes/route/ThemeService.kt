@@ -33,4 +33,7 @@ interface ThemeService {
 
     @DELETE("/themes/unlike")
     fun unlikeTheme(@Query("authorId") authorId: UUID, @Query("themeId") themeId: UUID): Deferred<Response<Void>>
+
+    @GET("/themes/by-id")
+    fun getThemeById(@Query("themeId") themeId: UUID): Deferred<Theme>
 }

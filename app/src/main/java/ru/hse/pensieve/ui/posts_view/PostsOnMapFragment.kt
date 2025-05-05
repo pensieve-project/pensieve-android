@@ -19,20 +19,24 @@ import com.yandex.runtime.image.ImageProvider
 import ru.hse.pensieve.R
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.utils.UserPreferences
+import java.util.UUID
 
 class PostsOnMapFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var postsType: String
+    private lateinit var id: UUID
 
     private val viewModel: PostViewModel by activityViewModels()
 
     companion object {
         private const val ARG_POSTS_TYPE = "posts_type"
+        private const val ARG_ID = "id"
 
-        fun newInstance(postsType: String): PostsOnMapFragment {
+        fun newInstance(postsType: String, id: UUID): PostsOnMapFragment {
             return PostsOnMapFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_POSTS_TYPE, postsType)
+                    putString(ARG_ID, id.toString())
                 }
             }
         }
@@ -42,6 +46,7 @@ class PostsOnMapFragment : Fragment() {
         super.onCreate(savedInstanceState)
         MapKitFactory.initialize(requireContext())
         postsType = requireArguments().getString(ARG_POSTS_TYPE)!!
+        id = UUID.fromString(requireArguments().getString(ARG_ID))
     }
 
     override fun onCreateView(
@@ -57,7 +62,10 @@ class PostsOnMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (postsType == "USERS_POSTS") {
-            viewModel.getAllUsersPosts(UserPreferences.getUserId()!!)
+            viewModel.getAllUsersPosts(id)
+        }
+        else if (postsType == "THEMES_POSTS") {
+            viewModel.getAllThemesPosts(id)
         }
         mapView = view.findViewById(R.id.mapview)
 

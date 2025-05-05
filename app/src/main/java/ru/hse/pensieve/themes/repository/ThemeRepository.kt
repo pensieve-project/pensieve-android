@@ -1,7 +1,8 @@
 package ru.hse.pensieve.themes.repository
 
 import ru.hse.pensieve.api.Client
-import ru.hse.pensieve.themes.models.Like
+import ru.hse.pensieve.posts.models.Like
+import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.themes.route.ThemeService
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.themes.models.ThemeRequest
@@ -38,5 +39,9 @@ class ThemeRepository {
 
     suspend fun unlikeTheme(authorId: UUID, themeId: UUID): Boolean {
         return themeApi.unlikeTheme(authorId, themeId).await().isSuccessful
+    }
+
+    suspend fun getThemeById(themeId: UUID): Theme {
+        return themeApi.getThemeById(themeId).await()
     }
 }

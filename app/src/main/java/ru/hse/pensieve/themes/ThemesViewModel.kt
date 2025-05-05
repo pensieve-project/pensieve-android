@@ -42,6 +42,15 @@ class ThemesViewModel: ViewModel() {
         }
     }
 
+    fun getThemeById(themeId : UUID) {
+        viewModelScope.launch {
+            try {
+                val theme = themeRepository.getThemeById(themeId)
+                _theme.value = theme
+            } catch (e: Exception) {
+                println("getThemeById: ${e.message}")
+                e.printStackTrace()
+                
     fun getLikedThemes() {
         viewModelScope.launch {
             try {
