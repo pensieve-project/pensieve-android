@@ -27,16 +27,12 @@ class AlbumsViewModel : ViewModel() {
         }
     }
 
-//    fun getAlbumPosts(coAuthors: Set<UUID>) {
-//        viewModelScope.launch {
-//            try {
-//                val albums = albumsRepository.getAlbumPosts(coAuthors)
-//                _albums.value = albums
-//            } catch (e: Exception) {
-//                println("getUserAlbums: ${e.message}")
-//                e.printStackTrace()
-//            }
-//        }
-//    }
+    suspend fun getAlbumAvatar(coAuthors: Set<UUID>) : ByteArray? {
+        return try {
+            albumsRepository.getAlbumPosts(coAuthors).first().photo
+        } catch (e: Exception) {
+            null
+        }
+    }
 
 }

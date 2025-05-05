@@ -1,23 +1,17 @@
 package ru.hse.pensieve.ui.postcreation
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
-import ru.hse.pensieve.databinding.FragmentCreateDescriptionBinding
 import ru.hse.pensieve.databinding.FragmentTagFriendsBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
 import ru.hse.pensieve.search.SearchViewModel
-import ru.hse.pensieve.ui.feed.UsersAdapter
-import ru.hse.pensieve.ui.feed.UsersSearchFragment
+import ru.hse.pensieve.ui.users_search.UsersSearchFragment
 import java.util.UUID
 
 class TagFriendsFragment : Fragment() {
@@ -31,6 +25,7 @@ class TagFriendsFragment : Fragment() {
     private lateinit var usersSearchFragment: UsersSearchFragment
 
     private var coAuthors: Set<UUID> = emptySet()
+    private var avatarsCache = mutableMapOf<UUID, ByteArray>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

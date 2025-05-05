@@ -14,14 +14,19 @@ class ProfileViewModel : ViewModel() {
 
     private val profileRepository = ProfileRepository()
 
-    private val _userNames = MutableLiveData<Map<UUID, String>>()
-    val userNames: LiveData<Map<UUID, String>> get() = _userNames
-
     suspend fun getUsername(userId: UUID): String {
         return try {
             profileRepository.getUsernameByAuthorId(userId)
         } catch (e: Exception) {
-            "Unknown"
+            "unknown"
+        }
+    }
+
+    suspend fun getAvatar(userId: UUID): ByteArray? {
+        return try {
+            profileRepository.getAvatarByAuthorId(userId)
+        } catch (e: Exception) {
+            null
         }
     }
 

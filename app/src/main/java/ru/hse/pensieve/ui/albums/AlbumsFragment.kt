@@ -12,8 +12,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.albums.AlbumsViewModel
+import ru.hse.pensieve.albums.models.Album
 import ru.hse.pensieve.databinding.FragmentAlbumsBinding
 import ru.hse.pensieve.profiles.ProfileViewModel
+import ru.hse.pensieve.search.models.User
 import java.util.UUID
 
 class AlbumsFragment : Fragment() {
@@ -24,6 +26,7 @@ class AlbumsFragment : Fragment() {
     private val profileViewModel: ProfileViewModel by activityViewModels()
 
     private var usernameCache = mutableMapOf<UUID, String>()
+    private var avatarsCache = mutableMapOf<Set<UUID>, ByteArray>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,31 +44,35 @@ class AlbumsFragment : Fragment() {
 
     private fun setupAdapter() {
         binding.albumsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = AlbumsAdapter(
-            emptyList(),
-            {},
-            { coAuthorIds ->
-                coAuthorIds?.joinToString(", ") { id ->
-                    usernameCache[id] ?: "Unknown"
-                } ?: ""
-            }
-        )
+
+        val getUserNames: (Album) -> String = { album ->
+            album.coAuthors?.joinToString(", ") { id ->
+                usernameCache[id] ?: "Unknown"
+            } ?: ""
+        }
+        val getAlbumAvatar: (Album) -> ByteArray? = { album -> avatarsCache[album.coAuthors] }
+
+        adapter = AlbumsAdapter(emptyList(), {}, getUserNames, getAlbumAvatar)
 
         binding.albumsRecyclerView.adapter = adapter
 
         viewModel.albums.observe(viewLifecycleOwner) { albums ->
             lifecycleScope.launch {
-                val allIds = albums
-                    ?.flatMap { it.coAuthors ?: emptySet() }
-                    ?.toSet()
-                    ?: emptySet()
-
-                allIds.map { id ->
+                albums.map { album ->
                     async {
-                        id to profileViewModel.getUsername(id)
+                        album.coAuthors!!.map { coAuthorId ->
+                            async {
+                                coAuthorId to profileViewModel.getUsername(coAuthorId)
+                            }
+                        }.awaitAll().forEach { (id, username) ->
+                            usernameCache[id] = username
+                        }
+                        album to viewModel.getAlbumAvatar(album.coAuthors)
                     }
-                }.awaitAll().forEach { (id, name) ->
-                    usernameCache[id] = name
+                }.awaitAll().forEach { (album, data) ->
+                    data?.let { avatar ->
+                        avatarsCache[album.coAuthors!!] = avatar
+                    }
                 }
 
                 adapter.updateUsers(albums ?: emptyList())

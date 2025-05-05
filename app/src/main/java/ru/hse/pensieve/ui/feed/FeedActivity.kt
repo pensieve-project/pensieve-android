@@ -13,6 +13,7 @@ import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.ui.posts_view.PostsDataSource
 import ru.hse.pensieve.ui.posts_view.PostsFeedFragment
+import ru.hse.pensieve.ui.users_search.UsersSearchFragment
 
 class SubscriptionsDataSource(
     private val feedViewModel: FeedViewModel

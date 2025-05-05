@@ -1,5 +1,6 @@
-package ru.hse.pensieve.ui.feed
+package ru.hse.pensieve.ui.users_search
 
+import android.graphics.BitmapFactory
 import androidx.recyclerview.widget.RecyclerView
 import ru.hse.pensieve.search.models.User
 
@@ -8,12 +9,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ItemUserBinding
-import ru.hse.pensieve.ui.themes.ThemeAdapter.ThemeViewHolder
 
 class UsersAdapter(
     private var users: List<User>,
     private val onItemClick: (Set<User>) -> Unit,
     private var isMultiSelectMode: Boolean,
+    private val getUsername: (User) -> String,
+    private val getUserAvatar: (User) -> ByteArray?
 ) : RecyclerView.Adapter<UsersAdapter.UserViewHolder>() {
 
     override fun getItemCount(): Int = users.size
@@ -91,9 +93,16 @@ class UsersAdapter(
         notifyDataSetChanged()
     }
 
-    class UserViewHolder(val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class UserViewHolder(val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
-            binding.usernameTextView.text = user.username
+            binding.usernameTextView.text = getUsername(user)
+            val avatar = getUserAvatar(user)
+            if (avatar == null) {
+                binding.avatarImageView.setImageResource(R.drawable.default_avatar)
+            } else {
+                val avatarBitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
+                binding.avatarImageView.setImageBitmap(avatarBitmap)
+            }
         }
     }
 }

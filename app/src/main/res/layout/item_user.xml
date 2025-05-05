@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/brown950"
-    android:paddingBottom="2dp">
+    android:background="@color/brown950">
 
     <LinearLayout
         android:id="@+id/userCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:background="@color/beige50"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatarImageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cornerSize="50%"
+            app:shapeAppearanceOverlay="@style/CircleShapeAppearance"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_avatar"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"/>
 
         <TextView
             android:id="@+id/usernameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textSize="18sp"
             android:textColor="@color/brown950"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
 
     </LinearLayout>
 
