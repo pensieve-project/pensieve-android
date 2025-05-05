@@ -6,7 +6,6 @@ import android.widget.ImageButton
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityProfileBinding
 import ru.hse.pensieve.ui.ToolbarActivity
-import ru.hse.pensieve.ui.posts_view.PostFragment
 import ru.hse.pensieve.ui.posts_view.PostsGridFragment
 import ru.hse.pensieve.profiles.repository.ProfileRepository
 import ru.hse.pensieve.utils.UserPreferences
@@ -86,7 +85,7 @@ class ProfileActivity :  ToolbarActivity() {
     }
 
     private fun showGrid() {
-        postsGridFragment = PostsGridFragment()
+        postsGridFragment = PostsGridFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsGridFragment)
             .addToBackStack(null)
@@ -94,7 +93,7 @@ class ProfileActivity :  ToolbarActivity() {
     }
 
     private fun showMap() {
-        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS")
+        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsOnMapFragment)

@@ -12,12 +12,9 @@ import ru.hse.pensieve.databinding.ActivityRegistrationBinding
 import ru.hse.pensieve.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.User
-import ru.hse.pensieve.ui.profile.ProfileActivity
 import ru.hse.pensieve.ui.search.SearchActivity
-import ru.hse.pensieve.utils.Hashing
 import ru.hse.pensieve.utils.UserPreferences
 import ru.hse.pensieve.utils.ValidationOfInput
-import java.util.UUID
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -39,8 +36,7 @@ class RegistrationActivity : AppCompatActivity() {
             val password = binding.passwordEditText.text.toString()
 
             if (validateInput(username, email, password)) {
-                val hashedPassword = Hashing.hashWithSha256(password)
-                authViewModel.register(username, email, hashedPassword)
+                authViewModel.register(username, email, password)
             }
         }
 

@@ -77,21 +77,20 @@ class PostViewModel : ViewModel() {
         e.printStackTrace()
     }
 
-    suspend fun getCurrentPost(currentUserId: UUID, postNumber: Int) {
-        println("id: " + currentUserId)
+    fun getAllThemesPosts(themeId: UUID) {
         viewModelScope.launch {
             try {
-                val posts = postRepository.getPostsByAuthor(currentUserId)
+                val posts = postRepository.getPostsByTheme(themeId)
                 if (posts.isNotEmpty()) {
-                    _post.value = posts[postNumber]
+                    _posts.value = posts
                 } else {
-                    println("No posts found for user $currentUserId")
-                    _post.value = null
+                    println("No posts found for theme $themeId")
+                    _posts.value = emptyList()
                 }
             } catch (e: Exception) {
-                println("Error in getCurrentPost: ${e.message}")
+                println("Error in getAllThemesPosts: ${e.message}")
                 e.printStackTrace()
-                _post.value = null
+                _posts.value = emptyList()
             }
         }
     }

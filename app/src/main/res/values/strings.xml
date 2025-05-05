@@ -15,4 +15,8 @@
     <string name="favourites">Favourites</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="theme">Theme</string>
+    <string name="create_post">Create post</string>
+    <string name="save_theme">Save theme</string>
+    <string name="theme_created_by">Theme created by</string>
 </resources>

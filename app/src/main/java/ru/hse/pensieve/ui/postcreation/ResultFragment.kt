@@ -66,8 +66,10 @@ class ResultFragment : Fragment() {
     private fun fillTextLables() {
         binding.themeName.setText(viewModel.postThemeTitle.value)
         binding.description.setText(viewModel.postText.value)
-        binding.location.setText(viewModel.postLocation.value!!.latitude.toString() + " " + viewModel.postLocation.value!!.longitude)
-        binding.coAuthors.setText(viewModel.postCoAuthors.value.toString())
+        if (viewModel.postLocation.value != null) {
+            binding.location.setText(viewModel.postLocation.value!!.latitude.toString() + " " + viewModel.postLocation.value!!.longitude)
+            binding.location.visibility = View.VISIBLE
+        }
     }
 
     private fun setPhoto() {
