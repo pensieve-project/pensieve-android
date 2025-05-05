@@ -11,12 +11,9 @@ import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.ActivityLoginBinding
 import ru.hse.pensieve.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
-import ru.hse.pensieve.ui.profile.ProfileActivity
 import ru.hse.pensieve.ui.search.SearchActivity
-import ru.hse.pensieve.utils.Hashing
 import ru.hse.pensieve.utils.UserPreferences
 import ru.hse.pensieve.utils.ValidationOfInput
-import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,8 +35,7 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.passwordEditText.text.toString()
 
             if (validateInput(email, password)) {
-                val hashedPassword = Hashing.hashWithSha256(password)
-                authViewModel.login(email, hashedPassword)
+                authViewModel.login(email, password)
             }
         }
 
