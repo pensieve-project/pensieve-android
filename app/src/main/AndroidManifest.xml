@@ -64,6 +64,11 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".ui.themes.ThemeActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
     </application>
 
 </manifest>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/btn_prev"
+        android:layout_margin="16dp"
+        style="@style/SmallButtonStyle"
+        android:src="@drawable/ic_left_arrow"
+        android:layout_marginBottom="42dp" />
+
+    <TextView
+        android:id="@+id/theme_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/brown950"
+        android:text="@string/theme"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8sp"/>
+
+    <TextView
+        android:id="@+id/author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/brown950"
+        android:text="@string/theme_created_by"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/brown950"
+        android:text="mm.dd.yy"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/create_post_button"
+            style="@style/OrangeButtonStyle"
+            android:text="@string/create_post" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_theme_button"
+            style="@style/OrangeButtonStyle"
+            android:text="@string/save_theme" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@color/orange400"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8sp">
+
+        <ImageButton
+            android:id="@+id/posts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/orange400"
+            android:src="@drawable/grid_3x3_gap_fill" />
+
+        <ImageButton
+            android:id="@+id/locations_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/orange400"
+            android:src="@drawable/geo_light" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"></FrameLayout>
+
+    <include layout="@layout/toolbar" />
+</LinearLayout>

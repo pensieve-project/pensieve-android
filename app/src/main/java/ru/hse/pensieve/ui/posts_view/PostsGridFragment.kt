@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.yandex.mapkit.MapKitFactory
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentPostsGridBinding
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.posts.models.Post
+import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment.Companion
 import ru.hse.pensieve.ui.profile.ProfileActivity
 import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
@@ -23,6 +25,28 @@ class PostsGridFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: PostViewModel by activityViewModels()
     private lateinit var adapter: ImageAdapter
+    private lateinit var postsType: String
+    private lateinit var id: UUID
+
+    companion object {
+        private const val ARG_POSTS_TYPE = "posts_type"
+        private const val ARG_ID = "id"
+
+        fun newInstance(postsType: String, id: UUID): PostsGridFragment {
+            return PostsGridFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_POSTS_TYPE, postsType)
+                    putString(ARG_ID, id.toString())
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        postsType = requireArguments().getString(PostsGridFragment.ARG_POSTS_TYPE)!!
+        id = UUID.fromString(requireArguments().getString(PostsGridFragment.ARG_ID))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,11 +71,17 @@ class PostsGridFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
         lifecycleScope.launch {
-            val currentUserId = UserPreferences.getUserId()
-            if (currentUserId != null) {
-                viewModel.getAllUsersPosts(currentUserId)
+            if (postsType == "USERS_POSTS") {
+                viewModel.getAllUsersPosts(id)
                 viewModel.posts.observe(viewLifecycleOwner) { posts ->
-                    adapter.posts = posts?.reversed() as List<Post>
+                    adapter.posts = posts?.sortedByDescending { it!!.timeStamp } as List<Post>
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            else if (postsType == "THEMES_POSTS") {
+                viewModel.getAllThemesPosts(id)
+                viewModel.posts.observe(viewLifecycleOwner) { posts ->
+                    adapter.posts = posts?.sortedByDescending { it!!.likesCount } as List<Post>
                     adapter.notifyDataSetChanged()
                 }
             }

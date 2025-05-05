@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.themes
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString

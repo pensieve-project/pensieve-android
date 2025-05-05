@@ -1,18 +1,23 @@
 package ru.hse.pensieve.ui.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivitySearchBinding
 import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
+import ru.hse.pensieve.ui.posts_view.ImageAdapter
+import ru.hse.pensieve.ui.posts_view.OpenPostActivity
+import ru.hse.pensieve.ui.themes.ThemeActivity
 import ru.hse.pensieve.ui.themes.ThemeAdapter
 
-class SearchActivity :  ToolbarActivity() {
+class SearchActivity : ToolbarActivity() {
     private lateinit var binding: ActivitySearchBinding
 
     private val searchViewModel: SearchViewModel by viewModels()
@@ -38,8 +43,11 @@ class SearchActivity :  ToolbarActivity() {
 
         searchViewModel.themes.observe(this, { themes ->
             if (themes != null) {
-                adapter = ThemeAdapter(themes) {
-                    // click
+                adapter = ThemeAdapter(themes) { theme ->
+                    val intent = Intent(this, ThemeActivity::class.java).apply {
+                        putExtra("THEME_ID", theme.themeId.toString())
+                    }
+                    startActivity(intent)
                 }
                 binding.recyclerView.adapter = adapter
             }

@@ -80,7 +80,7 @@ class ProfileActivity :  ToolbarActivity() {
     }
 
     private fun showGrid() {
-        postsGridFragment = PostsGridFragment()
+        postsGridFragment = PostsGridFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsGridFragment)
             .addToBackStack(null)
@@ -88,7 +88,7 @@ class ProfileActivity :  ToolbarActivity() {
     }
 
     private fun showMap() {
-        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS")
+        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsOnMapFragment)
