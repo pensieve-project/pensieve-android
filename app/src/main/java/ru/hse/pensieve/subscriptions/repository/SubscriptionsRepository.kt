@@ -24,11 +24,11 @@ class SubscriptionsRepository {
     }
 
     suspend fun getSubscribers(targetId: UUID): List<UUID> {
-        return subscriptionsService.getSubscriptions(targetId).await()
+        return subscriptionsService.getSubscribers(targetId).await()
     }
 
     suspend fun getSubscribersCount(targetId: UUID): Int {
-        return subscriptionsService.getSubscriptionsCount(targetId).await()
+        return subscriptionsService.getSubscribersCount(targetId).await()
     }
 
     suspend fun subscribe(subscriberId: UUID, targetId: UUID): Boolean {

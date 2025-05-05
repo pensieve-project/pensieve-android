@@ -50,6 +50,9 @@ class ThemesViewModel: ViewModel() {
             } catch (e: Exception) {
                 println("getThemeById: ${e.message}")
                 e.printStackTrace()
+            }
+        }
+    }
                 
     fun getLikedThemes() {
         viewModelScope.launch {
