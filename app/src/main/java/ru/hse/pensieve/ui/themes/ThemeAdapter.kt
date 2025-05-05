@@ -16,13 +16,19 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.UUID
 
 class ThemeAdapter(
-    private val themes: List<Theme>,
-    private val onItemClick: (Theme) -> Unit
+    private var themes: List<Theme>,
+    private val onItemClick: (Theme) -> Unit,
+    private val onLikeClick: (UUID, Boolean) -> Unit,
+    private var likedThemes: Set<UUID> = emptySet(),
+    private var authorUsernames: Map<UUID, String> = emptyMap()
 ) : RecyclerView.Adapter<ThemeAdapter.ThemeViewHolder>() {
 
     override fun getItemCount(): Int = themes.size
+    val currentList: List<Theme> get() = themes
+    val currentLikedThemes: Set<UUID> get() = likedThemes
     private var selectedPosition = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThemeViewHolder {
@@ -31,9 +37,27 @@ class ThemeAdapter(
         return ThemeViewHolder(binding)
     }
 
+    fun updateData(
+        newThemes: List<Theme>? = null,
+        newLikedThemes: Set<UUID>? = null,
+        newAuthorUsernames: Map<UUID, String>? = null
+    ) {
+        newThemes?.let { themes = it }
+        newLikedThemes?.let { likedThemes = it }
+        newAuthorUsernames?.let { authorUsernames = it }
+
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ThemeViewHolder, position: Int) {
         val theme = themes[position]
-        holder.bind(theme)
+        val isLiked = theme.themeId?.let { likedThemes.contains(it) } ?: false
+        val username = when {
+            !authorUsernames.containsKey(theme.authorId) -> ""
+            else -> authorUsernames[theme.authorId]?.takeIf { it.isNotEmpty() } ?: "Unknown"
+        }
+
+        holder.bind(theme, isLiked, username)
 
         changeThemeCardOnClick(holder, position == selectedPosition)
 
@@ -43,6 +67,12 @@ class ThemeAdapter(
             notifyItemChanged(previousSelected)
             notifyItemChanged(selectedPosition)
             onItemClick(theme)
+        }
+
+        holder.binding.like.setOnClickListener {
+            theme.themeId?.let { themeId ->
+                onLikeClick(themeId, isLiked)
+            }
         }
     }
 
@@ -72,11 +102,30 @@ class ThemeAdapter(
         )
     }
 
+    fun updateThemes(newThemes: List<Theme>) {
+        themes = newThemes
+        notifyDataSetChanged()
+    }
+
+    fun updateLikedThemes(newLikedThemes: Set<UUID>) {
+        likedThemes = newLikedThemes
+        notifyDataSetChanged()
+    }
+
+    fun updateAuthorUsernames(newAuthorUsernames: Map<UUID, String>) {
+        authorUsernames = newAuthorUsernames
+        notifyDataSetChanged()
+    }
+
     class ThemeViewHolder(val binding: ThemeItemThemeBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(theme: Theme) {
+        fun bind(theme: Theme, isLiked: Boolean, username: String) {
             binding.titleTextView.text = theme.title
-            binding.authorTextView.text = formatBoldText("Author: ", theme.authorId.toString())
-            binding.timeStampTextView.text = formatBoldText("Created: ", formatInstant(theme.timeStamp!!))
+            binding.authorTextView.text = formatBoldText("Author: ", username)
+            binding.timeStampTextView.text =
+                formatBoldText("Created: ", formatInstant(theme.timeStamp!!))
+
+            val likeIconRes = if (isLiked) R.drawable.likes_fill else R.drawable.likes
+            binding.like.setImageResource(likeIconRes)
         }
 
         private fun formatInstant(instant: Instant): String {

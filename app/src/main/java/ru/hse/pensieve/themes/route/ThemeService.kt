@@ -7,7 +7,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
-import ru.hse.pensieve.posts.models.Like
+import ru.hse.pensieve.themes.models.Like
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.themes.models.ThemeRequest
 import java.util.UUID
@@ -19,17 +19,20 @@ interface ThemeService {
     @GET("/themes")
     fun getAllThemes(): Deferred<List<Theme>>
 
+    @GET("/themes/get-liked")
+    fun getLikedThemes(@Query("authorId") authorId: UUID): Deferred<List<Theme>>
+
     @GET("/themes/title")
     fun getThemeTitle(@Query("themeId") themeId: UUID): Deferred<String>
 
     @GET("/themes/liked")
-    fun hasUserLikedTheme(@Body request: Like?): Deferred<Boolean>
+    fun hasUserLikedTheme(@Query("authorId") authorId: UUID, @Query("themeId") themeId: UUID): Deferred<Boolean>
 
     @POST("/themes/like")
     fun likeTheme(@Body request: Like?): Deferred<Response<Void>>
 
     @DELETE("/themes/unlike")
-    fun unlikeTheme(@Body request: Like?): Deferred<Response<Void>>
+    fun unlikeTheme(@Query("authorId") authorId: UUID, @Query("themeId") themeId: UUID): Deferred<Response<Void>>
 
     @GET("/themes/by-id")
     fun getThemeById(@Query("themeId") themeId: UUID): Deferred<Theme>
