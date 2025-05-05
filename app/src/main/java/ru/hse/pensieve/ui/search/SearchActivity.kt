@@ -50,7 +50,7 @@ class SearchActivity :  ToolbarActivity() {
     }
 
     private fun setupObservers() {
-        themeViewModel.themes.observe(this) { themes ->
+        searchViewModel.themes.observe(this) { themes ->
             themes?.let {
                 adapter.updateData(newThemes = it)
 

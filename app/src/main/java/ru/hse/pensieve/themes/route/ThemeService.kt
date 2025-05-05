@@ -32,5 +32,5 @@ interface ThemeService {
     fun likeTheme(@Body request: Like?): Deferred<Response<Void>>
 
     @DELETE("/themes/unlike")
-    fun unlikeTheme(@Body request: Like?): Deferred<Response<Void>>
+    fun unlikeTheme(@Query("authorId") authorId: UUID, @Query("themeId") themeId: UUID): Deferred<Response<Void>>
 }

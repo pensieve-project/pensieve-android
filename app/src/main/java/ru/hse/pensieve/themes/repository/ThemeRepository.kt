@@ -37,6 +37,6 @@ class ThemeRepository {
     }
 
     suspend fun unlikeTheme(authorId: UUID, themeId: UUID): Boolean {
-        return themeApi.unlikeTheme(Like(authorId, themeId)).await().isSuccessful
+        return themeApi.unlikeTheme(authorId, themeId).await().isSuccessful
     }
 }

@@ -76,7 +76,7 @@ class ThemesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        themesViewModel.themes.observe(viewLifecycleOwner) { themes ->
+        searchViewModel.themes.observe(viewLifecycleOwner) { themes ->
             themes?.let {
                 val authorIds = it.mapNotNull { theme -> theme.authorId }.toSet()
                 if (authorIds.isNotEmpty()) {
