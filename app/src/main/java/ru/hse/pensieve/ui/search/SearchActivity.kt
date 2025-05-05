@@ -40,16 +40,10 @@ class SearchActivity : ToolbarActivity() {
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ThemeAdapter(
-            themes = emptyList(),
-            onItemClick = {
-                // click
-            },
-            onLikeClick = { themeId, isLiked ->
-                themeViewModel.toggleLike(themeId, isLiked)
-            },
-            likedThemes = emptySet(),
-            authorUsernames = emptyMap()
-        )
+            emptyList()
+        ) {
+            // click
+        }
 
         binding.recyclerView.adapter = adapter
 
@@ -60,7 +54,7 @@ class SearchActivity : ToolbarActivity() {
                         putExtra("THEME_ID", theme.themeId.toString())
                     }
                     startActivity(intent)
-                    }, {u, b -> })
+                }
                 binding.recyclerView.adapter = adapter
             }
         })
