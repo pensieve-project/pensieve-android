@@ -49,7 +49,7 @@ class SearchActivity : ToolbarActivity() {
 
         searchViewModel.themes.observe(this, { themes ->
             if (themes != null) {
-                adapter = ThemeAdapter(themes) { theme ->
+                adapter = ThemeAdapter(themes, { theme ->
                     val intent = Intent(this, ThemeActivity::class.java).apply {
                         putExtra("THEME_ID", theme.themeId.toString())
                     }

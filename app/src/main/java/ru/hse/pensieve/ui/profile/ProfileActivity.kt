@@ -2,7 +2,9 @@ package ru.hse.pensieve.ui.profile
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
+import androidx.activity.addCallback
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityProfileBinding
 import ru.hse.pensieve.ui.ToolbarActivity
@@ -26,12 +28,14 @@ class ProfileActivity :  ToolbarActivity() {
     private lateinit var postsOnMapFragment: PostsOnMapFragment
     private lateinit var albumsFragment: AlbumsFragment
 
+    private lateinit var userId: UUID
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val userId = UserPreferences.getUserId()
+        userId = UserPreferences.getUserId() ?: return
         if (userId != null) {
             loadProfile(userId)
         }
@@ -46,6 +50,23 @@ class ProfileActivity :  ToolbarActivity() {
 
         binding.albumsButton.setOnClickListener {
             showAlbums()
+        }
+
+        binding.followersButton.setOnClickListener {
+            showSubscriptions(SubscriptionType.FOLLOWERS)
+        }
+
+        binding.followingsButton.setOnClickListener {
+            showSubscriptions(SubscriptionType.FOLLOWINGS)
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
+            if (binding.fullscreenContainer.visibility == View.VISIBLE) {
+                binding.mainContent.visibility = View.VISIBLE
+                binding.fullscreenContainer.visibility = View.GONE
+            } else {
+                finish()
+            }
         }
 
         setSupportActionBar(binding.root.findViewById(R.id.my_toolbar))
@@ -88,7 +109,6 @@ class ProfileActivity :  ToolbarActivity() {
         postsGridFragment = PostsGridFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsGridFragment)
-            .addToBackStack(null)
             .commit()
     }
 
@@ -97,7 +117,6 @@ class ProfileActivity :  ToolbarActivity() {
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsOnMapFragment)
-            .addToBackStack(null)
             .commit()
     }
 
@@ -106,7 +125,27 @@ class ProfileActivity :  ToolbarActivity() {
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, albumsFragment)
+            .commit()
+    }
+
+    private fun showSubscriptions(type: SubscriptionType) {
+        val fragment = SubscriptionsFragment.newInstance(userId, type)
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fullscreen_container, fragment)
             .addToBackStack(null)
             .commit()
+
+        showFullscreenContainer()
+    }
+
+    fun showFullscreenContainer() {
+        binding.mainContent.visibility = View.GONE
+        binding.fullscreenContainer.visibility = View.VISIBLE
+    }
+
+    fun hideFullscreenContainer() {
+        binding.mainContent.visibility = View.VISIBLE
+        binding.fullscreenContainer.visibility = View.GONE
     }
 }

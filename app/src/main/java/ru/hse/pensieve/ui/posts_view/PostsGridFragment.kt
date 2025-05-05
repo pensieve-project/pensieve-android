@@ -17,6 +17,7 @@ import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment.Companion
 import ru.hse.pensieve.ui.profile.ProfileActivity
 import ru.hse.pensieve.utils.UserPreferences
+import java.util.UUID
 
 class PostsGridFragment : Fragment() {
     private var _binding: FragmentPostsGridBinding? = null

@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ScrollView
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -128,6 +129,12 @@
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/fullscreen_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/toolbar_container"
