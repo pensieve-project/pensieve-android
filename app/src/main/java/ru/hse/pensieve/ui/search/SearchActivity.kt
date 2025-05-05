@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivitySearchBinding
 import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
-import ru.hse.pensieve.ui.posts_view.ImageAdapter
-import ru.hse.pensieve.ui.posts_view.OpenPostActivity
 import ru.hse.pensieve.ui.themes.ThemeActivity
 import ru.hse.pensieve.ui.themes.ThemeAdapter
 
@@ -40,26 +37,21 @@ class SearchActivity : ToolbarActivity() {
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ThemeAdapter(
-            emptyList()
-        ) {
-            // click
-        }
+            themes = emptyList(),
+            onItemClick = { theme ->
+                val intent = Intent(this, ThemeActivity::class.java).apply {
+                    putExtra("THEME_ID", theme.themeId.toString())
+                }
+                startActivity(intent)
+            },
+            onLikeClick = { themeId, isLiked ->
+                themeViewModel.toggleLike(themeId, isLiked)
+            },
+            likedThemes = emptySet(),
+            authorUsernames = emptyMap()
+        )
 
         binding.recyclerView.adapter = adapter
-
-        searchViewModel.themes.observe(this, { themes ->
-            if (themes != null) {
-                adapter = ThemeAdapter(themes, { theme ->
-                    val intent = Intent(this, ThemeActivity::class.java).apply {
-                        putExtra("THEME_ID", theme.themeId.toString())
-                    }
-                    startActivity(intent)
-                }
-                binding.recyclerView.adapter = adapter
-            }
-        })
-
-        searchViewModel.getAllThemes()
     }
 
     private fun setupObservers() {
