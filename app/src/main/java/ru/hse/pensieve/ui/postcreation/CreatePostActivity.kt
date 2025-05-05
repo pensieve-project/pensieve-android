@@ -17,6 +17,7 @@ class CreatePostActivity : AppCompatActivity() {
         ChoosePhotoFragment(),
         CreateDescriptionFragment(),
         LocationSearchFragment(),
+        TagFriendsFragment(),
         ResultFragment()
     )
 

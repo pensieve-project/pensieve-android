@@ -26,7 +26,7 @@ class PostRepository {
     private val themesService = Client.getInstanceOfService(ThemeService::class.java)
     private val userId: UUID = UserPreferences.getUserId()!!
 
-    suspend fun createPostInExistingTheme(text: String, photo: File, themeId: UUID, location: Point): Post {
+    suspend fun createPostInExistingTheme(text: String, photo: File, themeId: UUID, location: Point, coAuthors: Set<UUID>): Post {
         val filePart = MultipartBody.Part.createFormData(
             "photo", photo.getName(), RequestBody.create(
                 MediaType.parse("image/*"), photo
@@ -35,16 +35,28 @@ class PostRepository {
         val textPart = RequestBody.create(MediaType.parse("text/plain"), text)
         val locationDto = LocationDto(location.latitude, location.longitude)
         val locationJson = Gson().toJson(locationDto)
-        val locationPart = RequestBody.create(
-            MediaType.parse("application/json"),
-            locationJson
+        val locationPart = MultipartBody.Part.createFormData(
+            "location",
+            null,
+            RequestBody.create(
+               MediaType.parse("application/json"), locationJson
+            )
         )
         val userIdPart = RequestBody.create(MediaType.parse("text/plain"), userId.toString())
         val themeIdPart = RequestBody.create(MediaType.parse("text/plain"), themeId.toString())
-        return postService.createPost(textPart, filePart, locationPart, userIdPart, themeIdPart).await()
+        val coAuthorParts = coAuthors.map { coAuthorId ->
+            MultipartBody.Part.createFormData(
+                "coAuthors",
+                null,
+                RequestBody.create(
+                    MediaType.parse("text/plain"), coAuthorId.toString()
+                )
+            )
+        }
+        return postService.createPost(textPart, filePart, locationPart, userIdPart, themeIdPart, coAuthorParts).await()
     }
 
-    suspend fun createPostInNewTheme(text: String, photo: File, themeTitle: String, location: Point): Post {
+    suspend fun createPostInNewTheme(text: String, photo: File, themeTitle: String, location: Point, coAuthors: Set<UUID>): Post {
         val filePart = MultipartBody.Part.createFormData(
             "photo", photo.getName(), RequestBody.create(
                 MediaType.parse("image/*"), photo
@@ -54,15 +66,27 @@ class PostRepository {
         val textPart = RequestBody.create(MediaType.parse("text/plain"), text)
         val locationDto = LocationDto(location.latitude, location.longitude)
         val locationJson = Gson().toJson(locationDto)
-        val locationPart = RequestBody.create(
-            MediaType.parse("application/json"),
-            locationJson
+        val locationPart = MultipartBody.Part.createFormData(
+            "location",
+            null,
+            RequestBody.create(
+                MediaType.parse("application/json"), locationJson
+            )
         )
         val userIdPart = RequestBody.create(MediaType.parse("text/plain"), userId.toString())
+        val coAuthorParts = coAuthors.map { coAuthorId ->
+            MultipartBody.Part.createFormData(
+                "coAuthors",
+                null,
+                RequestBody.create(
+                    MediaType.parse("text/plain"), coAuthorId.toString()
+                )
+            )
+        }
         return withContext(Dispatchers.IO) {
             val theme = themesService.createTheme(ThemeRequest(userId, themeTitle)).await()
             val themeIdPart = RequestBody.create(MediaType.parse("text/plain"), theme.themeId.toString())
-            postService.createPost(textPart, filePart, locationPart, userIdPart, themeIdPart).await()
+            postService.createPost(textPart, filePart, locationPart, userIdPart, themeIdPart, coAuthorParts).await()
         }
     }
 

@@ -1,0 +1,89 @@
+package ru.hse.pensieve.ui.albums
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import ru.hse.pensieve.albums.AlbumsViewModel
+import ru.hse.pensieve.albums.models.Album
+import ru.hse.pensieve.databinding.FragmentAlbumsBinding
+import ru.hse.pensieve.profiles.ProfileViewModel
+import ru.hse.pensieve.search.models.User
+import java.util.UUID
+
+class AlbumsFragment : Fragment() {
+    private var _binding: FragmentAlbumsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: AlbumsAdapter
+    private val viewModel: AlbumsViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
+
+    private var usernameCache = mutableMapOf<UUID, String>()
+    private var avatarsCache = mutableMapOf<Set<UUID>, ByteArray>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAlbumsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupAdapter()
+    }
+
+    private fun setupAdapter() {
+        binding.albumsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val getUserNames: (Album) -> String = { album ->
+            album.coAuthors?.joinToString(", ") { id ->
+                usernameCache[id] ?: "Unknown"
+            } ?: ""
+        }
+        val getAlbumAvatar: (Album) -> ByteArray? = { album -> avatarsCache[album.coAuthors] }
+
+        adapter = AlbumsAdapter(emptyList(), {}, getUserNames, getAlbumAvatar)
+
+        binding.albumsRecyclerView.adapter = adapter
+
+        viewModel.albums.observe(viewLifecycleOwner) { albums ->
+            lifecycleScope.launch {
+                albums.map { album ->
+                    async {
+                        album.coAuthors!!.map { coAuthorId ->
+                            async {
+                                coAuthorId to profileViewModel.getUsername(coAuthorId)
+                            }
+                        }.awaitAll().forEach { (id, username) ->
+                            usernameCache[id] = username
+                        }
+                        album to viewModel.getAlbumAvatar(album.coAuthors)
+                    }
+                }.awaitAll().forEach { (album, data) ->
+                    data?.let { avatar ->
+                        avatarsCache[album.coAuthors!!] = avatar
+                    }
+                }
+
+                adapter.updateUsers(albums ?: emptyList())
+            }
+        }
+
+        viewModel.getUserAlbums()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

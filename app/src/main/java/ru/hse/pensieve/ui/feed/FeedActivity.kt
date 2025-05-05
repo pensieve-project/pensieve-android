@@ -13,6 +13,7 @@ import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.ui.posts_view.PostsDataSource
 import ru.hse.pensieve.ui.posts_view.PostsFeedFragment
+import ru.hse.pensieve.ui.users_search.UsersSearchFragment
 
 class SubscriptionsDataSource(
     private val feedViewModel: FeedViewModel
@@ -39,7 +40,9 @@ class FeedActivity :  ToolbarActivity() {
         binding = ActivityFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        usersSearchFragment = UsersSearchFragment.newInstance()
+        usersSearchFragment = UsersSearchFragment.newInstance({
+            // перейти на страницу
+        }, false)
         subscriptionsFragment = PostsFeedFragment.newInstance(SubscriptionsDataSource(feedViewModel))
 
         supportFragmentManager.beginTransaction()

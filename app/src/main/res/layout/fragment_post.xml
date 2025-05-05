@@ -57,7 +57,7 @@
             android:textColor="@color/brown950" />
 
         <TextView
-            android:id="@+id/friends"
+            android:id="@+id/coAuthors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="friend1, friend2"

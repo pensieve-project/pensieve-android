@@ -60,6 +60,14 @@
                 android:visibility="gone"
                 android:textSize="16sp" />
 
+            <TextView
+                android:id="@+id/coAuthors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="coAuthors"
+                android:textColor="@color/brown950"
+                android:textSize="16sp"/>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
