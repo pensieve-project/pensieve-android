@@ -1,7 +1,7 @@
 package ru.hse.pensieve.themes.repository
 
 import ru.hse.pensieve.api.Client
-import ru.hse.pensieve.posts.models.Like
+import ru.hse.pensieve.themes.models.Like
 import ru.hse.pensieve.themes.route.ThemeService
 import ru.hse.pensieve.themes.models.Theme
 import ru.hse.pensieve.themes.models.ThemeRequest
