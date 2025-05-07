@@ -67,7 +67,7 @@ class ResultFragment : Fragment() {
         binding.themeName.setText(viewModel.postThemeTitle.value)
         binding.description.setText(viewModel.postText.value)
         if (viewModel.postLocation.value != null) {
-            binding.location.setText(viewModel.postLocation.value!!.latitude.toString() + " " + viewModel.postLocation.value!!.longitude)
+            binding.location.setText(viewModel.postLocation.value!!.placeName)
             binding.location.visibility = View.VISIBLE
         }
     }

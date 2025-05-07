@@ -7,5 +7,8 @@ data class LocationDto(
     val latitude: Double,
 
     @SerializedName("longitude")
-    val longitude: Double
+    val longitude: Double,
+
+    @SerializedName("placeName")
+    val placeName: String
 )

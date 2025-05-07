@@ -5,5 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Point @JsonCreator constructor(
     @JsonProperty("latitude") val latitude: Double,
-    @JsonProperty("longitude") val longitude: Double
+    @JsonProperty("longitude") val longitude: Double,
+    @JsonProperty("placeName") val placeName: String
 )

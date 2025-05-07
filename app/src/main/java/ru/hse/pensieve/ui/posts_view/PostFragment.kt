@@ -66,7 +66,7 @@ class PostFragment : Fragment() {
                         themeTitle -> binding.theme.text = themeTitle
                 }
                 if (post.location != null) {
-                    binding.location.text = post.location.latitude.toString() + " " + post.location.longitude.toString()
+                    binding.location.text = post.location.placeName
                     binding.location.visibility = View.VISIBLE
                 }
                 binding.coAuthors.text = post.coAuthors.toString()

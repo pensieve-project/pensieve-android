@@ -46,8 +46,8 @@ class LocationSearchFragment : Fragment() {
             val firstResult = response.collection.children.first().obj
             val point = firstResult?.geometry?.firstOrNull()?.point
                 ?: return Toast.makeText(context, "Failed to determine coordinates", Toast.LENGTH_SHORT).show()
+            binding.btnNext.visibility = View.VISIBLE
 
-            chosenPoint = ru.hse.pensieve.posts.models.Point(point.latitude, point.longitude)
             moveCameraToPoint(point)
             addMarker(point)
 
@@ -57,6 +57,8 @@ class LocationSearchFragment : Fragment() {
                     ?: getItem(BusinessObjectMetadata::class.java)?.address?.formattedAddress
                     ?: "No address"
             }
+
+            chosenPoint = ru.hse.pensieve.posts.models.Point(point.latitude, point.longitude, name)
 
             binding.locationInfo.text = """
                 Name: $name
@@ -221,6 +223,6 @@ class LocationSearchFragment : Fragment() {
 
     private fun updateNavigationButtons() {
         binding.btnPrev.visibility = View.VISIBLE
-        binding.btnNext.visibility = View.VISIBLE
+        binding.btnNext.visibility = View.GONE
     }
 }

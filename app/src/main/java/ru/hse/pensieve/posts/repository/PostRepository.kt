@@ -33,7 +33,7 @@ class PostRepository {
             )
         )
         val textPart = RequestBody.create(MediaType.parse("text/plain"), text)
-        val locationDto = LocationDto(location.latitude, location.longitude)
+        val locationDto = LocationDto(location.latitude, location.longitude, location.placeName)
         val locationJson = Gson().toJson(locationDto)
         val locationPart = MultipartBody.Part.createFormData(
             "location",
@@ -64,7 +64,7 @@ class PostRepository {
         )
         println(filePart)
         val textPart = RequestBody.create(MediaType.parse("text/plain"), text)
-        val locationDto = LocationDto(location.latitude, location.longitude)
+        val locationDto = LocationDto(location.latitude, location.longitude, location.placeName)
         val locationJson = Gson().toJson(locationDto)
         val locationPart = MultipartBody.Part.createFormData(
             "location",
