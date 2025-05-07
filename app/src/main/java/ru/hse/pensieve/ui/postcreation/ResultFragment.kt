@@ -9,9 +9,12 @@ import androidx.core.content.ContentProviderCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.FragmentResultBinding
 import ru.hse.pensieve.posts.CreatePostViewModel
+import ru.hse.pensieve.profiles.ProfileViewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -22,6 +25,7 @@ class ResultFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: CreatePostViewModel
+    private lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +39,7 @@ class ResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(CreatePostViewModel::class.java)
+        profileViewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
 
         setupButtons()
         updateNavigationButtons()
@@ -66,6 +71,22 @@ class ResultFragment : Fragment() {
     private fun fillTextLables() {
         binding.themeName.setText(viewModel.postThemeTitle.value)
         binding.description.setText(viewModel.postText.value)
+
+        lifecycleScope.launch {
+            val coAuthors = viewModel.postCoAuthors.value
+            if (coAuthors != null) {
+                val names = coAuthors.map { id ->
+                    async {
+                        profileViewModel.getUsername(id)
+                    }
+                }.awaitAll()
+
+                binding.coAuthors.text = names.joinToString(", ")
+            } else {
+                binding.coAuthors.text = ""
+            }
+        }
+
         if (viewModel.postLocation.value != null) {
             binding.location.setText(viewModel.postLocation.value!!.latitude.toString() + " " + viewModel.postLocation.value!!.longitude)
             binding.location.visibility = View.VISIBLE

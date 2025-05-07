@@ -25,7 +25,6 @@ class TagFriendsFragment : Fragment() {
     private lateinit var usersSearchFragment: UsersSearchFragment
 
     private var coAuthors: Set<UUID> = emptySet()
-    private var avatarsCache = mutableMapOf<UUID, ByteArray>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

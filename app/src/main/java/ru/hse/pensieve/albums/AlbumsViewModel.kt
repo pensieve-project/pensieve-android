@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.albums.models.Album
 import ru.hse.pensieve.albums.repository.AlbumsRepository
+import ru.hse.pensieve.posts.models.Post
 import java.util.UUID
 
 class AlbumsViewModel : ViewModel() {
@@ -14,6 +15,9 @@ class AlbumsViewModel : ViewModel() {
 
     private val _albums = MutableLiveData<List<Album>>()
     val albums: MutableLiveData<List<Album>> get() = _albums
+
+    private val _posts = MutableLiveData<List<Post>>()
+    val posts: MutableLiveData<List<Post>> get() = _posts
 
     fun getUserAlbums(userId: UUID? = null) {
         viewModelScope.launch {
@@ -27,11 +31,15 @@ class AlbumsViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAlbumAvatar(coAuthors: Set<UUID>) : ByteArray? {
-        return try {
-            albumsRepository.getAlbumPosts(coAuthors).first().photo
-        } catch (e: Exception) {
-            null
+    fun getAlbumPosts(albumId: UUID) {
+        viewModelScope.launch {
+            try {
+                val posts = albumsRepository.getAlbumPosts(albumId)
+                _posts.value = posts
+            } catch (e: Exception) {
+                println("getAlbumPosts: ${e.message}")
+                e.printStackTrace()
+            }
         }
     }
 

@@ -12,6 +12,7 @@ data class Post(
     val timeStamp: Instant? = null,
     val location: Point? = null,
     val coAuthors: Set<UUID>? = null,
+    val albumId: UUID? = null,
     val likesCount: Int? = null,
     val commentsCount: Int? = null
 )
