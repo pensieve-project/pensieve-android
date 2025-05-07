@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yandex.mapkit.MapKitFactory
 import kotlinx.coroutines.launch
+import ru.hse.pensieve.albums.AlbumsViewModel
 import ru.hse.pensieve.databinding.FragmentPostsGridBinding
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.posts.models.Post
@@ -23,6 +24,7 @@ class PostsGridFragment : Fragment() {
     private var _binding: FragmentPostsGridBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PostViewModel by activityViewModels()
+    private val albumsViewModel: AlbumsViewModel by activityViewModels()
     private lateinit var adapter: ImageAdapter
     private lateinit var postsType: String
     private lateinit var id: UUID
@@ -81,6 +83,13 @@ class PostsGridFragment : Fragment() {
                 viewModel.getAllThemesPosts(id)
                 viewModel.posts.observe(viewLifecycleOwner) { posts ->
                     adapter.posts = posts?.sortedByDescending { it!!.likesCount } as List<Post>
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            else if (postsType == "ALBUM_POSTS") {
+                albumsViewModel.getAlbumPosts(id)
+                albumsViewModel.posts.observe(viewLifecycleOwner) { posts ->
+                    adapter.posts = posts?.sortedByDescending { it!!.timeStamp } as List<Post>
                     adapter.notifyDataSetChanged()
                 }
             }

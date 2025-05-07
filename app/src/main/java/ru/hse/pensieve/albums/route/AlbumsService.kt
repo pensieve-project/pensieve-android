@@ -13,6 +13,6 @@ interface AlbumsService {
     fun getUserAlbums(@Query("userId") userId: UUID): Deferred<List<Album>>
 
     @GET("/albums/posts")
-    fun getAlbumPosts(@Query("coAuthors") coAuthors: Set<UUID>): Deferred<List<Post>>
+    fun getAlbumPosts(@Query("albumId") albumId: UUID): Deferred<List<Post>>
 
 }

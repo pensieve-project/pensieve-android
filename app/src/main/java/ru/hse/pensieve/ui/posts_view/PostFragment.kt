@@ -69,7 +69,18 @@ class PostFragment : Fragment() {
                     binding.location.text = post.location.placeName
                     binding.location.visibility = View.VISIBLE
                 }
-                binding.coAuthors.text = post.coAuthors.toString()
+
+                viewModel.loadCoAuthorsUsernames(post.coAuthors ?: emptySet())
+                viewModel.coAuthorsUsernames.observe(viewLifecycleOwner) { names ->
+                    if (names.isNotEmpty()) {
+                        binding.coAuthors.text = names.joinToString(", ")
+                        binding.coAuthors.visibility = View.VISIBLE
+                    } else {
+                        binding.coAuthors.text = ""
+                        binding.coAuthors.visibility = View.GONE
+                    }
+                }
+
                 val photoByteArray = post.photo
                 val bitmap = photoByteArray?.toBitmap()
                 binding.imgPhoto.setImageBitmap(bitmap)

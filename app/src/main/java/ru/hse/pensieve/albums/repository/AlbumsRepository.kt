@@ -21,9 +21,9 @@ class AlbumsRepository {
         }
     }
 
-    suspend fun getAlbumPosts(coAuthors: Set<UUID>): List<Post> {
+    suspend fun getAlbumPosts(albumId: UUID): List<Post> {
         return try {
-            val response = albumsService.getAlbumPosts(coAuthors).await()
+            val response = albumsService.getAlbumPosts(albumId).await()
             response
         } catch (e: Exception) {
             println("Error in getAlbumPosts: ${e.message}")

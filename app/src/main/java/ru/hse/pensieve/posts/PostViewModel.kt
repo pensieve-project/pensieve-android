@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.posts.models.Comment
 import ru.hse.pensieve.posts.models.Post
@@ -52,6 +54,8 @@ class PostViewModel : ViewModel() {
 
     private val _allPosts = MutableLiveData<List<Post?>?>()
     val allPosts: MutableLiveData<List<Post?>?> get() = _allPosts
+
+    val coAuthorsUsernames = MutableLiveData<List<String>>()
 
     fun loadPosts(type: PostsType, userId: UUID? = null) {
         viewModelScope.launch {
@@ -225,6 +229,22 @@ class PostViewModel : ViewModel() {
                 _authorUsername.value = username
             } catch (e: Exception) {
                 println("getAuthorUsername: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun loadCoAuthorsUsernames(coAuthors: Set<UUID>) {
+        viewModelScope.launch {
+            try {
+                val names = coAuthors.filter { it != post.value?.authorId }.map { id ->
+                    async {
+                        profileRepository.getUsernameByAuthorId(id)
+                    }
+                }.awaitAll()
+                coAuthorsUsernames.postValue(names)
+            } catch (e: Exception) {
+                println("loadCoAuthorsUsernames: ${e.message}")
                 e.printStackTrace()
             }
         }

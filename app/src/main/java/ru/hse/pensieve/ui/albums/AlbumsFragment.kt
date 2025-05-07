@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.albums
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,6 @@ import ru.hse.pensieve.albums.AlbumsViewModel
 import ru.hse.pensieve.albums.models.Album
 import ru.hse.pensieve.databinding.FragmentAlbumsBinding
 import ru.hse.pensieve.profiles.ProfileViewModel
-import ru.hse.pensieve.search.models.User
 import java.util.UUID
 
 class AlbumsFragment : Fragment() {
@@ -26,7 +26,7 @@ class AlbumsFragment : Fragment() {
     private val profileViewModel: ProfileViewModel by activityViewModels()
 
     private var usernameCache = mutableMapOf<UUID, String>()
-    private var avatarsCache = mutableMapOf<Set<UUID>, ByteArray>()
+    private var avatarsCache = mutableMapOf<UUID, ByteArray>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +50,17 @@ class AlbumsFragment : Fragment() {
                 usernameCache[id] ?: "Unknown"
             } ?: ""
         }
-        val getAlbumAvatar: (Album) -> ByteArray? = { album -> avatarsCache[album.coAuthors] }
+        val getAlbumAvatar: (Album) -> ByteArray? = { album -> avatarsCache[album.albumId] }
+        val onItemClick: (Album) -> Unit = { album ->
+            Intent(requireActivity(), AlbumActivity::class.java).apply {
+                putExtra("ALBUM_ID", album.albumId.toString())
+                putExtra("ALBUM_AVATAR", album.avatar)
+                putStringArrayListExtra("CO_AUTHORS", ArrayList(album.coAuthors?.map { it.toString() } ?: emptyList()))
+                startActivity(this)
+            }
+        }
 
-        adapter = AlbumsAdapter(emptyList(), {}, getUserNames, getAlbumAvatar)
+        adapter = AlbumsAdapter(emptyList(), onItemClick, getUserNames, getAlbumAvatar)
 
         binding.albumsRecyclerView.adapter = adapter
 
@@ -67,11 +75,11 @@ class AlbumsFragment : Fragment() {
                         }.awaitAll().forEach { (id, username) ->
                             usernameCache[id] = username
                         }
-                        album to viewModel.getAlbumAvatar(album.coAuthors)
+                        album to album.avatar
                     }
                 }.awaitAll().forEach { (album, data) ->
                     data?.let { avatar ->
-                        avatarsCache[album.coAuthors!!] = avatar
+                        avatarsCache[album.albumId!!] = avatar
                     }
                 }
 
