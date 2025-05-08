@@ -3,13 +3,10 @@ package ru.hse.pensieve.ui.profile
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import ru.hse.pensieve.R
-import ru.hse.pensieve.databinding.ActivityProfileBinding
+import ru.hse.pensieve.databinding.ActivityForeignProfileBinding
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.ui.posts_view.PostsGridFragment
 import ru.hse.pensieve.profiles.repository.ProfileRepository
@@ -22,27 +19,28 @@ import kotlinx.coroutines.withContext
 import ru.hse.pensieve.ui.albums.AlbumsFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
-
-class ProfileActivity :  ToolbarActivity() {
-    private lateinit var binding: ActivityProfileBinding
+class ForeignProfileActivity : ToolbarActivity() {
+    private lateinit var binding: ActivityForeignProfileBinding
     private val profileRepository = ProfileRepository()
+    private lateinit var userId: UUID
 
     private lateinit var postsGridFragment: PostsGridFragment
     private lateinit var postsOnMapFragment: PostsOnMapFragment
     private lateinit var albumsFragment: AlbumsFragment
-    private lateinit var menuButton: ImageButton
-    private lateinit var menuContainer: LinearLayout
-
-    private lateinit var userId: UUID
-    private var isMenuOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivityForeignProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userId = UserPreferences.getUserId() ?: return
+        userId = UUID.fromString(intent.getStringExtra("USER_ID"))
+        println("get " + userId)
+
         loadProfile(userId)
+
+        binding.btnClose.setOnClickListener {
+            finish()
+        }
 
         binding.locationsButton.setOnClickListener {
             showMap()
@@ -64,8 +62,6 @@ class ProfileActivity :  ToolbarActivity() {
             showSubscriptions(SubscriptionType.FOLLOWINGS)
         }
 
-        setupMenu()
-
         onBackPressedDispatcher.addCallback(this) {
             if (binding.fullscreenContainer.visibility == View.VISIBLE) {
                 binding.mainContent.visibility = View.VISIBLE
@@ -85,25 +81,28 @@ class ProfileActivity :  ToolbarActivity() {
             binding.root.findViewById<ImageButton>(R.id.button5)
         )
         setupButtons(buttons, defaultIcons, selectedIcons, -1)
-        val button5 = binding.root.findViewById<ImageButton>(R.id.button5)
-        button5.setImageResource(R.drawable.person_fill1)
+        val button2 = binding.root.findViewById<ImageButton>(R.id.button2)
+        button2.setImageResource(R.drawable.search_fill)
 
         showGrid()
     }
 
-    fun loadProfile(authorId: UUID) {
+    private fun loadProfile(authorId: UUID) {
         lifecycleScope.launch {
             try {
                 val profile = withContext(Dispatchers.IO) {
                     profileRepository.getProfileByAuthorId(authorId)
                 }
-                binding.username.text = UserPreferences.getUsername(authorId);
-                binding.description.text = profile.description;
-                if (profile.avatar == null || profile.avatar.isEmpty()) {
-                    binding.avatar.setImageResource(R.drawable.default_avatar)
-                } else {
-                    val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
-                    binding.avatar.setImageBitmap(avatarBitmap)
+                withContext(Dispatchers.Main) {
+                    binding.username.text = profileRepository.getUsernameByAuthorId(authorId)
+                    binding.description.text = profile.description
+
+                    if (profile.avatar == null || profile.avatar.isEmpty()) {
+                        binding.avatar.setImageResource(R.drawable.default_avatar)
+                    } else {
+                        val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
+                        binding.avatar.setImageBitmap(avatarBitmap)
+                    }
                 }
             } catch (e: Exception) {
                 println(e.message)
@@ -148,66 +147,5 @@ class ProfileActivity :  ToolbarActivity() {
     fun showFullscreenContainer() {
         binding.mainContent.visibility = View.GONE
         binding.fullscreenContainer.visibility = View.VISIBLE
-    }
-
-    fun hideFullscreenContainer() {
-        binding.mainContent.visibility = View.VISIBLE
-        binding.fullscreenContainer.visibility = View.GONE
-    }
-
-    private fun setupMenu() {
-        menuButton = findViewById(R.id.menu_button)
-        menuContainer = findViewById(R.id.menu_container)
-
-        menuButton.apply {
-            setOnClickListener {
-                isMenuOpen = !isMenuOpen
-                toggleMenu(isMenuOpen)
-            }
-        }
-
-        setupMenuItem(R.id.menu_item1, EditProfileFragment())
-        setupMenuItem(R.id.menu_item2) { logout() }
-    }
-
-    private fun setupMenuItem(menuItemId: Int, fragment: Fragment? = null, action: (() -> Unit)? = null) {
-        findViewById<Button>(menuItemId).setOnClickListener {
-            fragment?.let {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fullscreen_container, it)
-                    .addToBackStack(null)
-                    .commit()
-            }
-            action?.invoke()
-            showFullscreenContainer()
-            closeMenu()
-        }
-    }
-
-    private fun toggleMenu(open: Boolean) {
-        menuButton.setImageResource(
-            if (open) R.drawable.ic_three_dots_fill else R.drawable.ic_three_dots
-        )
-
-        menuContainer.apply {
-            if (open) {
-                visibility = View.VISIBLE
-                animate().alpha(1f).setDuration(200).start()
-            } else {
-                animate().alpha(0f).setDuration(200).withEndAction {
-                    visibility = View.GONE
-                }.start()
-            }
-        }
-    }
-
-    private fun closeMenu() {
-        isMenuOpen = false
-        toggleMenu(false)
-    }
-
-    private fun logout() {
-        //logout
-        finish()
     }
 }

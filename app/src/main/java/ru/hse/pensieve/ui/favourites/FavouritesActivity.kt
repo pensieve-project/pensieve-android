@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.favourites
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
@@ -8,6 +9,7 @@ import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityFavouritesBinding
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
+import ru.hse.pensieve.ui.themes.ThemeActivity
 import ru.hse.pensieve.ui.themes.ThemeAdapter
 import java.util.UUID
 
@@ -32,8 +34,11 @@ class FavouritesActivity : ToolbarActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ThemeAdapter(
             themes = emptyList(),
-            onItemClick = {
-                // click
+            onItemClick = { theme ->
+                val intent = Intent(this, ThemeActivity::class.java).apply {
+                    putExtra("THEME_ID", theme.themeId.toString())
+                }
+                startActivity(intent)
             },
             onLikeClick = { themeId, isLiked ->
                 if (!isLiked) {
