@@ -24,14 +24,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="end">
+                    android:gravity="start">
 
                     <ImageButton
-                        android:id="@+id/menu_button"
+                        android:id="@+id/btn_close"
                         style="@style/SmallButtonStyle"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:src="@drawable/ic_three_dots" />
+                        android:src="@drawable/ic_left_arrow"/>
 
                 </LinearLayout>
                 <androidx.cardview.widget.CardView
@@ -159,28 +157,4 @@
 
         <include layout="@layout/toolbar" />
     </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/menu_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="16dp"
-        android:elevation="8dp"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/menu_item1"
-            style="@style/ActionButtonStyle"
-            android:text="edit profile" />
-
-        <Button
-            android:id="@+id/menu_item2"
-            style="@style/ActionButtonStyle"
-            android:text="logout" />
-    </LinearLayout>
 </RelativeLayout>
