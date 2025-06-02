@@ -19,4 +19,6 @@
     <string name="create_post">Create post</string>
     <string name="save_theme">Save theme</string>
     <string name="theme_created_by">Theme created by</string>
+    <string name="subscribe">subscribe</string>
+    <string name="unsubscribe">unsubscribe</string>
 </resources>

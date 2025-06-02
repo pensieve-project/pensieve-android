@@ -16,17 +16,21 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.hse.pensieve.subscriptions.repository.SubscriptionsRepository
 import ru.hse.pensieve.ui.albums.AlbumsFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
 class ForeignProfileActivity : ToolbarActivity() {
     private lateinit var binding: ActivityForeignProfileBinding
     private val profileRepository = ProfileRepository()
+    private val subscriptionsRepository = SubscriptionsRepository()
     private lateinit var userId: UUID
 
     private lateinit var postsGridFragment: PostsGridFragment
     private lateinit var postsOnMapFragment: PostsOnMapFragment
     private lateinit var albumsFragment: AlbumsFragment
+
+    private var isSubscribed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +97,12 @@ class ForeignProfileActivity : ToolbarActivity() {
                 val profile = withContext(Dispatchers.IO) {
                     profileRepository.getProfileByAuthorId(authorId)
                 }
+                val subscribed = withContext(Dispatchers.IO) {
+                    subscriptionsRepository.hasUserSubscribed(
+                        UserPreferences.getUserId()!!,
+                        authorId
+                    )
+                }
                 withContext(Dispatchers.Main) {
                     binding.username.text = profileRepository.getUsernameByAuthorId(authorId)
                     binding.description.text = profile.description
@@ -103,6 +113,14 @@ class ForeignProfileActivity : ToolbarActivity() {
                         val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
                         binding.avatar.setImageBitmap(avatarBitmap)
                     }
+
+                    isSubscribed = subscribed
+                    binding.subscribeButton.apply {
+                        text = context.getString(
+                            if (isSubscribed) R.string.unsubscribe else R.string.subscribe
+                        )
+                        setOnClickListener { toggleSubscription() }
+                    }
                 }
             } catch (e: Exception) {
                 println(e.message)
@@ -110,15 +128,31 @@ class ForeignProfileActivity : ToolbarActivity() {
         }
     }
 
+    private fun toggleSubscription() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                if (isSubscribed) {
+                    subscriptionsRepository.unsubscribe(UserPreferences.getUserId()!!, userId)
+                } else {
+                    subscriptionsRepository.subscribe(UserPreferences.getUserId()!!, userId)
+                }
+            }
+            isSubscribed = !isSubscribed
+            binding.subscribeButton.text = getString(
+                if (isSubscribed) R.string.unsubscribe else R.string.subscribe
+            )
+        }
+    }
+
     private fun showGrid() {
-        postsGridFragment = PostsGridFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
+        postsGridFragment = PostsGridFragment.newInstance("USERS_POSTS", userId)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsGridFragment)
             .commit()
     }
 
     private fun showMap() {
-        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS", UserPreferences.getUserId()!!)
+        postsOnMapFragment = PostsOnMapFragment.newInstance("USERS_POSTS", userId)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, postsOnMapFragment)
@@ -126,7 +160,7 @@ class ForeignProfileActivity : ToolbarActivity() {
     }
 
     private fun showAlbums() {
-        albumsFragment = AlbumsFragment()
+        albumsFragment = AlbumsFragment.newInstance(userId)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, albumsFragment)

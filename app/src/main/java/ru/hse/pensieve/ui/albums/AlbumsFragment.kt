@@ -16,6 +16,8 @@ import ru.hse.pensieve.albums.AlbumsViewModel
 import ru.hse.pensieve.albums.models.Album
 import ru.hse.pensieve.databinding.FragmentAlbumsBinding
 import ru.hse.pensieve.profiles.ProfileViewModel
+import ru.hse.pensieve.ui.profile.SubscriptionType
+import ru.hse.pensieve.ui.profile.SubscriptionsFragment
 import java.util.UUID
 
 class AlbumsFragment : Fragment() {
@@ -93,5 +95,15 @@ class AlbumsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val ARG_USER_ID = "user_id"
+
+        fun newInstance(userId: UUID) = AlbumsFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(ARG_USER_ID, userId)
+            }
+        }
     }
 }
