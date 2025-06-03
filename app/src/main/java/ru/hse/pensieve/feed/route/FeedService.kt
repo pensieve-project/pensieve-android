@@ -14,4 +14,6 @@ interface FeedService {
     @GET("/feed/subscriptions")
     fun getSubscriptionsFeed(@Query("userId") userId: UUID, @Query("limit") limit: Int, @Query("lastSeenTime") lastSeenTime: Instant): Deferred<List<Post>>
 
+    @GET("/feed/popular")
+    fun getPopularFeed(): Deferred<List<Post>>
 }

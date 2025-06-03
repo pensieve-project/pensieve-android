@@ -15,6 +15,9 @@ class FeedViewModel: ViewModel() {
     private val _subscribedPosts = MutableLiveData<List<Post>>()
     val subscribedPosts: LiveData<List<Post>> get() = _subscribedPosts
 
+    private val _popularPosts = MutableLiveData<List<Post>>()
+    val popularPosts: LiveData<List<Post>> get() = _popularPosts
+
     private var lastSeenTime: Instant? = null
     private var isLoading = false
     private var isEndReached = false
@@ -43,4 +46,15 @@ class FeedViewModel: ViewModel() {
         }
     }
 
+    fun loadPopularPosts() {
+        viewModelScope.launch {
+            try {
+                val posts = feedRepository.getPopularFeed()
+                _popularPosts.value = posts
+            } catch (e: Exception) {
+                println("Error in getPopularPosts: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
 }

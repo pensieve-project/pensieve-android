@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.ActivityLoginBinding
 import ru.hse.pensieve.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
-import ru.hse.pensieve.ui.search.SearchActivity
+import ru.hse.pensieve.ui.feed.PopularPostsFeedActivity
 import ru.hse.pensieve.utils.UserPreferences
 import ru.hse.pensieve.utils.ValidationOfInput
 
@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     userRepository.currentUserId = user.id
                 }
-                startActivity(Intent(this, SearchActivity::class.java))
+                startActivity(Intent(this, PopularPostsFeedActivity::class.java))
                 finish()
             }
         })
