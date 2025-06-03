@@ -23,4 +23,10 @@ class FeedRepository {
         println("Received " + result.size + " posts in feed repo")
         return result
     }
+
+    suspend fun getPopularFeed(): List<Post> {
+        val result = feedService.getPopularFeed().await()
+        println("Received " + result.size + " posts in feed repo")
+        return result
+    }
 }
