@@ -17,6 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hse.pensieve.subscriptions.repository.SubscriptionsRepository
+import ru.hse.pensieve.room.repositories.UserRepository
+import ru.hse.pensieve.room.AppDatabase
+import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.albums.AlbumsFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
@@ -31,6 +34,9 @@ class ForeignProfileActivity : ToolbarActivity() {
     private lateinit var albumsFragment: AlbumsFragment
 
     private var isSubscribed = false
+
+    private val appDatabase by lazy { AppDatabase.getInstance(this) }
+    private val userRepository by lazy { UserRepository(appDatabase.userDao()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +99,7 @@ class ForeignProfileActivity : ToolbarActivity() {
 
     private fun loadProfile(authorId: UUID) {
         lifecycleScope.launch {
+            val cachedProfile = userRepository.getUserById(authorId)
             try {
                 val profile = withContext(Dispatchers.IO) {
                     profileRepository.getProfileByAuthorId(authorId)
@@ -103,27 +110,38 @@ class ForeignProfileActivity : ToolbarActivity() {
                         authorId
                     )
                 }
-                withContext(Dispatchers.Main) {
-                    binding.username.text = profileRepository.getUsernameByAuthorId(authorId)
-                    binding.description.text = profile.description
-
-                    if (profile.avatar == null || profile.avatar.isEmpty()) {
-                        binding.avatar.setImageResource(R.drawable.default_avatar)
-                    } else {
-                        val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
-                        binding.avatar.setImageBitmap(avatarBitmap)
-                    }
-
-                    isSubscribed = subscribed
-                    binding.subscribeButton.apply {
-                        text = context.getString(
-                            if (isSubscribed) R.string.unsubscribe else R.string.subscribe
-                        )
-                        setOnClickListener { toggleSubscription() }
-                    }
+                isSubscribed = subscribed
+                binding.subscribeButton.apply {
+                    text = context.getString(
+                        if (isSubscribed) R.string.unsubscribe else R.string.subscribe
+                    )
+                    setOnClickListener { toggleSubscription() }
+                }
+                val username = profileRepository.getUsernameByAuthorId(authorId)
+                userRepository.upsertUser(User(authorId, username, profile.description, profile.avatar))
+                println("Added " + userRepository.getUsernameById(authorId))
+                binding.username.text = username
+                binding.description.text = profile.description
+                if (profile.avatar == null || profile.avatar.isEmpty()) {
+                    binding.avatar.setImageResource(R.drawable.default_avatar)
+                } else {
+                    val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
+                    binding.avatar.setImageBitmap(avatarBitmap)
                 }
             } catch (e: Exception) {
                 println(e.message)
+                if (cachedProfile != null) {
+                    println("Add from cache")
+                    binding.username.text = cachedProfile.username
+                    binding.description.text = cachedProfile.description
+                    if (cachedProfile.avatar == null || cachedProfile.avatar!!.isEmpty()) {
+                        binding.avatar.setImageResource(R.drawable.default_avatar)
+                    } else {
+                        val avatarBitmap =
+                            BitmapFactory.decodeByteArray(cachedProfile.avatar, 0, cachedProfile.avatar!!.size)
+                        binding.avatar.setImageBitmap(avatarBitmap)
+                    }
+                }
             }
         }
     }

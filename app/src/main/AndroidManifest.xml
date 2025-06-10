@@ -46,6 +46,11 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
+            android:name=".ui.profile.ForeignProfileActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
             android:name=".ui.feed.FeedActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateHidden" />

@@ -15,7 +15,6 @@ import java.util.UUID
 
 class OpenPostActivity : ToolbarActivity() {
     private lateinit var binding: ActivityOpenPostBinding
-    private val viewModel: PostViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

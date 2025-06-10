@@ -1,19 +1,17 @@
 package ru.hse.pensieve.ui.themes
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
-import androidx.fragment.app.commit
 import ru.hse.pensieve.R
-import ru.hse.pensieve.databinding.ActivityOpenPostBinding
 import ru.hse.pensieve.databinding.ActivityThemeBinding
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.themes.ThemesViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
-import ru.hse.pensieve.ui.posts_view.PostFragment
 import ru.hse.pensieve.ui.posts_view.PostsGridFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
-import ru.hse.pensieve.utils.UserPreferences
+import ru.hse.pensieve.ui.profile.ForeignProfileActivity
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -55,7 +53,13 @@ class ThemeActivity : ToolbarActivity() {
                 binding.themeName.text = theme.title
                 postViewModel.getAuthorUsername(theme.authorId!!)
                 postViewModel.authorUsername.observe(this) {
-                        authorUsername -> binding.author.text = "Theme created by" + authorUsername
+                        authorUsername -> binding.author.text = "Theme created by " + authorUsername
+                }
+                binding.author.setOnClickListener {
+                    val intent = Intent(this, ForeignProfileActivity::class.java).apply {
+                        putExtra("USER_ID", theme.authorId.toString())
+                    }
+                    startActivity(intent)
                 }
                 binding.date.text = formatInstant(theme.timeStamp!!)
             }

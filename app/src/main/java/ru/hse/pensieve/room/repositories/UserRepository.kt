@@ -1,4 +1,4 @@
-package ru.hse.pensieve.repositories
+package ru.hse.pensieve.room.repositories
 
 import ru.hse.pensieve.room.daos.UserDao
 import ru.hse.pensieve.room.entities.User
@@ -16,6 +16,10 @@ class UserRepository @Inject constructor(
 
     suspend fun updateUser(user: User) {
         userDao.update(user)
+    }
+
+    suspend fun upsertUser(user: User) {
+        userDao.upsert(user)
     }
 
     suspend fun getAllUsers(): List<User> {

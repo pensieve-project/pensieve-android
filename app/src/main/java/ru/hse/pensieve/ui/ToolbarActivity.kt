@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.R
 import ru.hse.pensieve.ui.favourites.FavouritesActivity
 import ru.hse.pensieve.ui.feed.FeedActivity
+import ru.hse.pensieve.ui.search.SearchActivity
 import ru.hse.pensieve.ui.profile.ProfileActivity
 import androidx.appcompat.widget.Toolbar
 import ru.hse.pensieve.ui.feed.PopularPostsFeedActivity
@@ -40,7 +41,7 @@ abstract class ToolbarActivity : AppCompatActivity() {
         FeedActivity::class.java,
         PopularPostsFeedActivity::class.java,
         CreatePostActivity::class.java,
-        FavouritesActivity::class.java,
+        SearchActivity::class.java,
         ProfileActivity::class.java
     )
 

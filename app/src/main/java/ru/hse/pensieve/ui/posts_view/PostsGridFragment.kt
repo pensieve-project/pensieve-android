@@ -9,15 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.yandex.mapkit.MapKitFactory
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.albums.AlbumsViewModel
 import ru.hse.pensieve.databinding.FragmentPostsGridBinding
 import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.posts.models.Post
-import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment.Companion
-import ru.hse.pensieve.ui.profile.ProfileActivity
-import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
 class PostsGridFragment : Fragment() {
