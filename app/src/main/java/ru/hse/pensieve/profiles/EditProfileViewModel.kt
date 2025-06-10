@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
 import ru.hse.pensieve.profiles.repository.ProfileRepository
-import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.repositories.UserRepository
 import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.utils.UserPreferences
 import java.io.File

@@ -19,7 +19,7 @@ import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentEditProfileBinding
 import ru.hse.pensieve.profiles.EditProfileViewModel
 import ru.hse.pensieve.profiles.repository.ProfileRepository
-import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.User
 import java.io.File

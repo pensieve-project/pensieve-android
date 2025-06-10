@@ -19,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.albums.AlbumsFragment

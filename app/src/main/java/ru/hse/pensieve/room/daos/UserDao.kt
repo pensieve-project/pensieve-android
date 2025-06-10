@@ -31,4 +31,8 @@ interface UserDao {
 
     @Query("SELECT avatar FROM users WHERE id = :userId")
     suspend fun getAvatarById(userId: UUID): ByteArray?
+
+    @Query("DELETE FROM users WHERE id NOT IN " +
+            "(SELECT id FROM users ORDER BY lastAccessTime DESC LIMIT 50)")
+    suspend fun keepLatestUsers()
 }

@@ -9,5 +9,6 @@ data class User(
     @PrimaryKey val id: UUID,
     var username: String,
     var description: String?,
-    var avatar: ByteArray?
+    var avatar: ByteArray?,
+    val lastAccessTime: Long = System.currentTimeMillis()
 )

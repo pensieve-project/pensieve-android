@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.databinding.ActivityRegistrationBinding
-import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.search.SearchActivity
