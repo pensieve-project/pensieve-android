@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +19,9 @@ import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.FragmentEditProfileBinding
 import ru.hse.pensieve.profiles.EditProfileViewModel
 import ru.hse.pensieve.profiles.repository.ProfileRepository
+import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.AppDatabase
+import ru.hse.pensieve.room.entities.User
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -32,6 +34,8 @@ class EditProfileFragment: Fragment() {
     private lateinit var viewModel: EditProfileViewModel
     private val profileRepository = ProfileRepository()
     private val userId = UserPreferences.getUserId()
+    private val appDatabase by lazy { AppDatabase.getInstance(requireContext()) }
+    private val userRepository by lazy { UserRepository(appDatabase.userDao()) }
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -56,7 +60,7 @@ class EditProfileFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity())[EditProfileViewModel::class.java]
+        viewModel = EditProfileViewModel(userRepository)
         setupButtons()
         loadCurrentProfile()
     }
@@ -102,15 +106,31 @@ class EditProfileFragment: Fragment() {
     private fun loadCurrentProfile() {
         lifecycleScope.launch {
             try {
-                val profile = withContext(Dispatchers.IO) {
-                    profileRepository.getProfileByAuthorId(userId!!)
+                val cachedProfile = userRepository.getUserById(userId!!)
+                if (cachedProfile == null) {
+                    val profile = withContext(Dispatchers.IO) {
+                        profileRepository.getProfileByAuthorId(userId)
+                    }
+                    userRepository.insertUser(User(userId, UserPreferences.getUsername(userId)!!, profile.description, profile.avatar))
+                    println("Added " + userRepository.getUsernameById(userId))
+                    binding.description.setText(profile.description)
+                    if (profile.avatar == null || profile.avatar.isEmpty()) {
+                        binding.avatar.setImageResource(R.drawable.default_avatar)
+                    } else {
+                        val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
+                        binding.avatar.setImageBitmap(avatarBitmap)
+                    }
                 }
-                binding.description.setText(profile.description)
-                if (profile.avatar == null || profile.avatar.isEmpty()) {
-                    binding.avatar.setImageResource(R.drawable.default_avatar)
-                } else {
-                    val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
-                    binding.avatar.setImageBitmap(avatarBitmap)
+                else {
+                    println("Add from cache")
+                    binding.description.setText(cachedProfile.description)
+                    if (cachedProfile.avatar == null || cachedProfile.avatar!!.isEmpty()) {
+                        binding.avatar.setImageResource(R.drawable.default_avatar)
+                    } else {
+                        val avatarBitmap =
+                            BitmapFactory.decodeByteArray(cachedProfile.avatar, 0, cachedProfile.avatar!!.size)
+                        binding.avatar.setImageBitmap(avatarBitmap)
+                    }
                 }
             } catch (e: Exception) {
                 println(e.message)

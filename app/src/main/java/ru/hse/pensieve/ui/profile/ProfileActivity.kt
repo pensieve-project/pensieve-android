@@ -19,6 +19,9 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.AppDatabase
+import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.albums.AlbumsFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
@@ -35,6 +38,9 @@ class ProfileActivity :  ToolbarActivity() {
 
     private lateinit var userId: UUID
     private var isMenuOpen = false
+
+    private val appDatabase by lazy { AppDatabase.getInstance(this) }
+    private val userRepository by lazy { UserRepository(appDatabase.userDao()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,16 +100,32 @@ class ProfileActivity :  ToolbarActivity() {
     fun loadProfile(authorId: UUID) {
         lifecycleScope.launch {
             try {
-                val profile = withContext(Dispatchers.IO) {
-                    profileRepository.getProfileByAuthorId(authorId)
+                binding.username.text = UserPreferences.getUsername(authorId)
+                val cachedProfile = userRepository.getUserById(authorId)
+                if (cachedProfile == null) {
+                    val profile = withContext(Dispatchers.IO) {
+                        profileRepository.getProfileByAuthorId(authorId)
+                    }
+                    userRepository.insertUser(User(authorId, UserPreferences.getUsername(authorId)!!, profile.description, profile.avatar))
+                    println("Added " + userRepository.getUsernameById(authorId))
+                    binding.description.text = profile.description;
+                    if (profile.avatar == null || profile.avatar.isEmpty()) {
+                        binding.avatar.setImageResource(R.drawable.default_avatar)
+                    } else {
+                        val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
+                        binding.avatar.setImageBitmap(avatarBitmap)
+                    }
                 }
-                binding.username.text = UserPreferences.getUsername(authorId);
-                binding.description.text = profile.description;
-                if (profile.avatar == null || profile.avatar.isEmpty()) {
-                    binding.avatar.setImageResource(R.drawable.default_avatar)
-                } else {
-                    val avatarBitmap = BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size)
-                    binding.avatar.setImageBitmap(avatarBitmap)
+                else {
+                    println("Add from cache")
+                    binding.description.setText(cachedProfile.description)
+                    if (cachedProfile.avatar == null || cachedProfile.avatar!!.isEmpty()) {
+                        binding.avatar.setImageResource(R.drawable.default_avatar)
+                    } else {
+                        val avatarBitmap =
+                            BitmapFactory.decodeByteArray(cachedProfile.avatar, 0, cachedProfile.avatar!!.size)
+                        binding.avatar.setImageBitmap(avatarBitmap)
+                    }
                 }
             } catch (e: Exception) {
                 println(e.message)

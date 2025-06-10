@@ -2,7 +2,6 @@ package ru.hse.pensieve.ui.posts_view
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,7 @@ class CommentsFragment : BottomSheetDialogFragment() {
 
         viewModel.loadComments(postId)
 
-        viewModel.comments.observe(viewLifecycleOwner) { comments ->
+        viewModel.commentsWithAuthors.observe(viewLifecycleOwner) { comments ->
             adapter.updateComments(comments!!)
         }
 

@@ -18,6 +18,10 @@ class UserRepository @Inject constructor(
         userDao.update(user)
     }
 
+    suspend fun upsertUser(user: User) {
+        userDao.upsert(user)
+    }
+
     suspend fun getAllUsers(): List<User> {
         return userDao.getAllUsers()
     }

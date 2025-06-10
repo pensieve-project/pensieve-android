@@ -89,7 +89,7 @@ class RegistrationActivity : AppCompatActivity() {
                 UserPreferences.saveUserUsername(user.id, user.username!!)
                 lifecycleScope.launch {
                     userRepository.currentUserId = user.id
-                    userRepository.insertUser(User(user.id, user.username!!, null))
+                    userRepository.insertUser(User(user.id, user.username, null, null))
                 }
                 startActivity(Intent(this, SearchActivity::class.java))
                 finish()

@@ -9,9 +9,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.posts.models.Comment
+import ru.hse.pensieve.posts.models.CommentWithAuthor
 import ru.hse.pensieve.posts.models.Post
 import ru.hse.pensieve.posts.repository.PostRepository
 import ru.hse.pensieve.profiles.repository.ProfileRepository
+import ru.hse.pensieve.repositories.UserRepository
+import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.themes.repository.ThemeRepository
 import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
@@ -56,6 +59,9 @@ class PostViewModel : ViewModel() {
     val allPosts: MutableLiveData<List<Post?>?> get() = _allPosts
 
     val coAuthorsUsernames = MutableLiveData<List<String>>()
+
+    private val _commentsWithAuthors = MutableLiveData<List<CommentWithAuthor>>()
+    val commentsWithAuthors: MutableLiveData<List<CommentWithAuthor>> get() = _commentsWithAuthors
 
     fun loadPosts(type: PostsType, userId: UUID? = null) {
         viewModelScope.launch {
@@ -182,14 +188,23 @@ class PostViewModel : ViewModel() {
                 val comments = postRepository.getPostComments(postId)
                 if (comments.isNotEmpty()) {
                     _comments.value = comments
+                    var commentsWithAuthors: MutableList<CommentWithAuthor> = mutableListOf()
+                    for (comment in comments) {
+                        val authorAvatar = profileRepository.getProfileByAuthorId(comment.authorId!!).avatar
+                        val authorUsername = profileRepository.getUsernameByAuthorId(comment.authorId)
+                        commentsWithAuthors.add(CommentWithAuthor(comment, authorUsername, authorAvatar))
+                    }
+                    _commentsWithAuthors.value = commentsWithAuthors
                 } else {
                     println("No comments found for post $postId")
                     _comments.value = emptyList()
+                    _commentsWithAuthors.value = emptyList()
                 }
             } catch (e: Exception) {
                 println("Error in loadComments: ${e.message}")
                 e.printStackTrace()
                 _comments.value = emptyList()
+                _commentsWithAuthors.value = emptyList()
             }
         }
     }
@@ -261,4 +276,17 @@ class PostViewModel : ViewModel() {
             }
         }
     }
+
+//    fun saveAuthorsProfile(authorId: UUID) {
+//        viewModelScope.launch {
+//            try {
+//                val profile = profileRepository.getProfileByAuthorId(authorId)
+//                val username = profileRepository.getUsernameByAuthorId(authorId)
+//                userRepository.upsertUser(User(authorId, username, profile.description, profile.avatar))
+//            } catch (e: Exception) {
+//                println("Error in saveAuthorsProfile: ${e.message}")
+//                e.printStackTrace()
+//            }
+//        }
+//    }
 }
