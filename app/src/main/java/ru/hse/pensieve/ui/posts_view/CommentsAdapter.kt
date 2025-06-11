@@ -1,15 +1,18 @@
 package ru.hse.pensieve.ui.posts_view
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import ru.hse.pensieve.R
 import ru.hse.pensieve.posts.models.CommentWithAuthor
 import ru.hse.pensieve.profiles.repository.ProfileRepository
+import ru.hse.pensieve.ui.profile.ForeignProfileActivity
 
 class CommentsAdapter(private var comments: List<CommentWithAuthor>) :
     RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
@@ -45,6 +48,12 @@ class CommentsAdapter(private var comments: List<CommentWithAuthor>) :
             itemView.findViewById<TextView>(R.id.commentAuthor).text =
                 commentWithAuthor.authorUsername
             itemView.findViewById<TextView>(R.id.commentText).text = commentWithAuthor.comment.text
+            itemView.findViewById<ImageView>(R.id.avatar).setOnClickListener {
+                val intent = Intent(itemView.context, ForeignProfileActivity::class.java).apply {
+                    putExtra("USER_ID", commentWithAuthor.comment.authorId.toString())
+                }
+                itemView.context.startActivity(intent)
+            }
         }
     }
 }

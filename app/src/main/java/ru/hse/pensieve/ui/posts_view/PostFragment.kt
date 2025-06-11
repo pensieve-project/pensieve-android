@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.posts_view
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -21,6 +22,7 @@ import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.PostEntity
 import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.themes.repository.ThemeRepository
+import ru.hse.pensieve.ui.profile.ForeignProfileActivity
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -97,6 +99,20 @@ class PostFragment : Fragment() {
                 binding.theme.text = cachedPost.themeTitle
                 val currentTime = System.currentTimeMillis()
                 postRepository.updateLastAccessTime(postId, currentTime)
+
+                binding.avatar.setOnClickListener {
+                    val intent = Intent(requireContext(), ForeignProfileActivity::class.java).apply {
+                        putExtra("USER_ID", cachedPost.authorId.toString())
+                    }
+                    startActivity(intent)
+                }
+
+                binding.username.setOnClickListener {
+                    val intent = Intent(requireContext(), ForeignProfileActivity::class.java).apply {
+                        putExtra("USER_ID", cachedPost.authorId.toString())
+                    }
+                    startActivity(intent)
+                }
             } else {
                 viewModel.getPostById(postId)
             }
