@@ -41,27 +41,9 @@
         android:textSize="14sp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/create_post_button"
-            style="@style/OrangeButtonStyle"
-            android:text="@string/create_post" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/save_theme_button"
-            style="@style/OrangeButtonStyle"
-            android:text="@string/save_theme" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:background="@color/orange400"
         android:gravity="center"
         android:orientation="horizontal"

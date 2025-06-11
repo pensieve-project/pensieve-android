@@ -18,7 +18,6 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import ru.hse.pensieve.R
 import ru.hse.pensieve.posts.PostViewModel
-import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
 class PostsOnMapFragment : Fragment() {

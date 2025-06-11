@@ -1,7 +1,5 @@
 package ru.hse.pensieve.posts
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,9 +25,6 @@ class PostViewModel : ViewModel() {
 
     private val _posts = MutableLiveData<List<Post?>?>()
     val posts: MutableLiveData<List<Post?>?> get() = _posts
-
-    private val _postImages = MutableLiveData<List<Bitmap>>()
-    val postImages: MutableLiveData<List<Bitmap>> get() = _postImages
 
     private val _comments = MutableLiveData<List<Comment?>?>()
     val comments: MutableLiveData<List<Comment?>?> get() = _comments
@@ -58,11 +53,6 @@ class PostViewModel : ViewModel() {
 
     private val _commentsWithAuthors = MutableLiveData<List<CommentWithAuthor>>()
     val commentsWithAuthors: MutableLiveData<List<CommentWithAuthor>> get() = _commentsWithAuthors
-
-    private fun logError(e: Exception) {
-        println("Error: ${e.message}")
-        e.printStackTrace()
-    }
 
     fun getAllThemesPosts(themeId: UUID) {
         viewModelScope.launch {
@@ -98,10 +88,6 @@ class PostViewModel : ViewModel() {
                 _posts.value = emptyList()
             }
         }
-    }
-
-    private fun ByteArray.toBitmap(): Bitmap? {
-        return BitmapFactory.decodeByteArray(this, 0, this.size)
     }
 
     fun loadLikeStatus(postId: UUID) {

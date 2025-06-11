@@ -76,10 +76,23 @@ class PostFragment : Fragment() {
                 val authorId = cachedPost.authorId
                 val profile = profileRepository.getProfileByAuthorId(authorId)
                 val username = profileRepository.getUsernameByAuthorId(authorId)
-                userRepository.upsertUser(User(authorId, username, profile.description, profile.avatar))
+                userRepository.upsertUser(
+                    User(
+                        authorId,
+                        username,
+                        profile.description,
+                        profile.avatar
+                    )
+                )
                 binding.username.text = username
                 if (profile.avatar != null && profile.avatar.isNotEmpty()) {
-                    binding.avatar.setImageBitmap(BitmapFactory.decodeByteArray(profile.avatar, 0, profile.avatar.size))
+                    binding.avatar.setImageBitmap(
+                        BitmapFactory.decodeByteArray(
+                            profile.avatar,
+                            0,
+                            profile.avatar.size
+                        )
+                    )
                 }
                 binding.theme.text = cachedPost.themeTitle
                 val currentTime = System.currentTimeMillis()

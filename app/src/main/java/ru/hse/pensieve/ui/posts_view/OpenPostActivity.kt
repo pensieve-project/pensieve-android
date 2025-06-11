@@ -2,15 +2,10 @@ package ru.hse.pensieve.ui.posts_view
 
 import android.os.Bundle
 import android.widget.ImageButton
-import androidx.activity.viewModels
 import androidx.fragment.app.commit
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import ru.hse.pensieve.R
 import ru.hse.pensieve.databinding.ActivityOpenPostBinding
-import ru.hse.pensieve.posts.PostViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
-import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
 class OpenPostActivity : ToolbarActivity() {

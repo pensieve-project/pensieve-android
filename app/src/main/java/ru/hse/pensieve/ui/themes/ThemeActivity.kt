@@ -52,8 +52,8 @@ class ThemeActivity : ToolbarActivity() {
             if (theme != null) {
                 binding.themeName.text = theme.title
                 postViewModel.getAuthorUsername(theme.authorId!!)
-                postViewModel.authorUsername.observe(this) {
-                        authorUsername -> binding.author.text = "Theme created by " + authorUsername
+                postViewModel.authorUsername.observe(this) { authorUsername ->
+                    binding.author.text = "Theme created by " + authorUsername
                 }
                 binding.author.setOnClickListener {
                     val intent = Intent(this, ForeignProfileActivity::class.java).apply {
@@ -76,10 +76,6 @@ class ThemeActivity : ToolbarActivity() {
         binding.postsButton.setOnClickListener {
             showGrid()
         }
-
-        // кнопка создать пост в теме
-
-        // кнопка сохранить тему
 
         showGrid()
     }
