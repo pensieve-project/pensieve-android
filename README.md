@@ -6,13 +6,6 @@
     <h2></h2>
 </div>
 
-## Dependencies:
-- Android SDK
-- Room
-- Retrofit2
-- Yandex Maps
-- Firebase
-
 ## Build and run:
 **Get a Yandex MapKit Api key:** Instructions are [here](https://yandex.ru/maps-api/docs/mapkit/android/generated/getting_started.html) (first step).
 
