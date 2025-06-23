@@ -27,7 +27,7 @@ interface SubscriptionsService {
     fun subscribe(@Body request: SubscriptionRequest): Deferred<Response<Void>>
 
     @DELETE("/subscriptions/unsubscribe")
-    fun unsubscribe(@Body request: SubscriptionRequest): Deferred<Response<Void>>
+    fun unsubscribe(@Query("subscriberId") subscriberId: UUID, @Query("targetId") targetId: UUID): Deferred<Response<Void>>
 
     @GET("/subscriptions/subscribed")
     fun hasUserSubscribed(@Query("subscriberId") subscriberId: UUID, @Query("targetId") targetId: UUID): Deferred<Boolean>

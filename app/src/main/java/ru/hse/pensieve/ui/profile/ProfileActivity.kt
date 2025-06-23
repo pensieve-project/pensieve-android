@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.profile
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
@@ -23,10 +24,11 @@ import ru.hse.pensieve.room.repositories.UserRepository
 import ru.hse.pensieve.room.AppDatabase
 import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.albums.AlbumsFragment
+import ru.hse.pensieve.ui.authorization.LoginActivity
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
 
-class ProfileActivity :  ToolbarActivity() {
+class ProfileActivity :  ToolbarActivity(), ProfileContainer {
     private lateinit var binding: ActivityProfileBinding
     private val profileRepository = ProfileRepository()
 
@@ -35,6 +37,9 @@ class ProfileActivity :  ToolbarActivity() {
     private lateinit var albumsFragment: AlbumsFragment
     private lateinit var menuButton: ImageButton
     private lateinit var menuContainer: LinearLayout
+
+    private enum class ActiveButton { POSTS, LOCATIONS, ALBUMS }
+    private var currentActiveButton = ActiveButton.POSTS
 
     private lateinit var userId: UUID
     private var isMenuOpen = false
@@ -52,14 +57,17 @@ class ProfileActivity :  ToolbarActivity() {
 
         binding.locationsButton.setOnClickListener {
             showMap()
+            setActiveButton(ActiveButton.LOCATIONS)
         }
 
         binding.postsButton.setOnClickListener {
             showGrid()
+            setActiveButton(ActiveButton.POSTS)
         }
 
         binding.albumsButton.setOnClickListener {
             showAlbums()
+            setActiveButton(ActiveButton.ALBUMS)
         }
 
         binding.followersButton.setOnClickListener {
@@ -74,8 +82,8 @@ class ProfileActivity :  ToolbarActivity() {
 
         onBackPressedDispatcher.addCallback(this) {
             if (binding.fullscreenContainer.visibility == View.VISIBLE) {
-                binding.mainContent.visibility = View.VISIBLE
-                binding.fullscreenContainer.visibility = View.GONE
+                hideFullscreenContainer()
+                supportFragmentManager.popBackStack()
             } else {
                 finish()
             }
@@ -167,14 +175,33 @@ class ProfileActivity :  ToolbarActivity() {
         showFullscreenContainer()
     }
 
-    fun showFullscreenContainer() {
+    override fun showFullscreenContainer() {
         binding.mainContent.visibility = View.GONE
         binding.fullscreenContainer.visibility = View.VISIBLE
     }
 
-    fun hideFullscreenContainer() {
+    override fun hideFullscreenContainer() {
         binding.mainContent.visibility = View.VISIBLE
         binding.fullscreenContainer.visibility = View.GONE
+    }
+
+    private fun setActiveButton(button: ActiveButton) {
+        currentActiveButton = button
+
+        binding.postsButton.setImageResource(
+            if (button == ActiveButton.POSTS) R.drawable.grid_3x3_gap_fill
+            else R.drawable.grid_3x3_gap_light
+        )
+
+        binding.locationsButton.setImageResource(
+            if (button == ActiveButton.LOCATIONS) R.drawable.geo_fill
+            else R.drawable.geo_light
+        )
+
+        binding.albumsButton.setImageResource(
+            if (button == ActiveButton.ALBUMS) R.drawable.people_fill
+            else R.drawable.people_light
+        )
     }
 
     private fun setupMenu() {
@@ -229,7 +256,11 @@ class ProfileActivity :  ToolbarActivity() {
     }
 
     private fun logout() {
-        //logout
+        UserPreferences.clearUserId()
+        val intent = Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
         finish()
     }
 }

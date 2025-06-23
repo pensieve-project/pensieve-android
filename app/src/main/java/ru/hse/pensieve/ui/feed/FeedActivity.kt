@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.feed
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.viewModels
@@ -13,6 +14,7 @@ import ru.hse.pensieve.search.SearchViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
 import ru.hse.pensieve.ui.posts_view.PostsDataSource
 import ru.hse.pensieve.ui.posts_view.PostsFeedFragment
+import ru.hse.pensieve.ui.profile.ForeignProfileActivity
 import ru.hse.pensieve.ui.users_search.UsersSearchFragment
 
 class SubscriptionsDataSource(
@@ -40,8 +42,13 @@ class FeedActivity :  ToolbarActivity() {
         binding = ActivityFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        usersSearchFragment = UsersSearchFragment.newInstance({
-            // перейти на страницу
+        usersSearchFragment = UsersSearchFragment.newInstance({ selectedUsers ->
+            val user = selectedUsers.lastOrNull()
+            if (user != null) {
+                val intent = Intent(this, ForeignProfileActivity::class.java)
+                intent.putExtra("USER_ID", user.userId.toString())
+                startActivity(intent)
+            }
         }, false)
         subscriptionsFragment = PostsFeedFragment.newInstance(SubscriptionsDataSource(feedViewModel))
 

@@ -29,7 +29,7 @@ class TagFriendsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentTagFriendsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,8 +37,8 @@ class TagFriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(CreatePostViewModel::class.java)
-        searchViewModel = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[CreatePostViewModel::class.java]
+        searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
 
         usersSearchFragment = UsersSearchFragment.newInstance({
             users -> coAuthors = users.map { it.userId!! }.toSet()

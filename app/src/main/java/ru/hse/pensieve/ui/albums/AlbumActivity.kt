@@ -9,7 +9,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import ru.hse.pensieve.R
-import ru.hse.pensieve.albums.AlbumsViewModel
 import ru.hse.pensieve.databinding.ActivityAlbumBinding
 import ru.hse.pensieve.profiles.ProfileViewModel
 import ru.hse.pensieve.ui.ToolbarActivity
@@ -20,11 +19,13 @@ import java.util.UUID
 class AlbumActivity : ToolbarActivity() {
     private lateinit var binding: ActivityAlbumBinding
 
-    private val viewModel: AlbumsViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
 
     private lateinit var postsGridFragment: PostsGridFragment
     private lateinit var postsOnMapFragment: PostsOnMapFragment
+
+    private enum class ActiveButton { POSTS, LOCATIONS }
+    private var currentActiveButton = ActiveButton.POSTS
 
     private lateinit var albumId: UUID
 
@@ -78,10 +79,12 @@ class AlbumActivity : ToolbarActivity() {
 
         binding.locationsButton.setOnClickListener {
             showMap()
+            setActiveButton(ActiveButton.LOCATIONS)
         }
 
         binding.postsButton.setOnClickListener {
             showGrid()
+            setActiveButton(ActiveButton.POSTS)
         }
 
         showGrid()
@@ -101,5 +104,19 @@ class AlbumActivity : ToolbarActivity() {
             .replace(R.id.fragment_container, postsOnMapFragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun setActiveButton(button: ActiveButton) {
+        currentActiveButton = button
+
+        binding.postsButton.setImageResource(
+            if (button == ActiveButton.POSTS) R.drawable.grid_3x3_gap_fill
+            else R.drawable.grid_3x3_gap_light
+        )
+
+        binding.locationsButton.setImageResource(
+            if (button == ActiveButton.LOCATIONS) R.drawable.geo_fill
+            else R.drawable.geo_light
+        )
     }
 }

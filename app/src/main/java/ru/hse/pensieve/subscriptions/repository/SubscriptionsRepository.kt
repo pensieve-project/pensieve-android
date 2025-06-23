@@ -1,13 +1,8 @@
 package ru.hse.pensieve.subscriptions.repository
 
-import kotlinx.coroutines.Deferred
 import ru.hse.pensieve.api.Client
-import ru.hse.pensieve.posts.models.Like
 import ru.hse.pensieve.subscriptions.models.SubscriptionRequest
 import ru.hse.pensieve.subscriptions.route.SubscriptionsService
-import ru.hse.pensieve.themes.route.ThemeService
-import ru.hse.pensieve.themes.models.Theme
-import ru.hse.pensieve.themes.models.ThemeRequest
 import ru.hse.pensieve.utils.UserPreferences
 import java.util.UUID
 
@@ -36,7 +31,7 @@ class SubscriptionsRepository {
     }
 
     suspend fun unsubscribe(subscriberId: UUID, targetId: UUID): Boolean {
-        return subscriptionsService.unsubscribe(SubscriptionRequest(subscriberId, targetId)).await().isSuccessful
+        return subscriptionsService.unsubscribe(subscriberId, targetId).await().isSuccessful
     }
 
     suspend fun hasUserSubscribed(subscriberId: UUID, targetId: UUID): Boolean {

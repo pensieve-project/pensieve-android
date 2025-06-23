@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import ru.hse.pensieve.R
 import ru.hse.pensieve.ui.favourites.FavouritesActivity
 import ru.hse.pensieve.ui.feed.FeedActivity
-import ru.hse.pensieve.ui.search.SearchActivity
 import ru.hse.pensieve.ui.profile.ProfileActivity
 import androidx.appcompat.widget.Toolbar
 import ru.hse.pensieve.ui.feed.PopularPostsFeedActivity
@@ -25,7 +24,7 @@ abstract class ToolbarActivity : AppCompatActivity() {
         R.drawable.house_light,
         R.drawable.search_light,
         R.drawable.plus_square_light,
-        R.drawable.heart_light,
+        R.drawable.filter_light,
         R.drawable.person_light1
     )
 
@@ -33,7 +32,7 @@ abstract class ToolbarActivity : AppCompatActivity() {
         R.drawable.house_fill,
         R.drawable.search_fill,
         R.drawable.plus_square_fill,
-        R.drawable.heart_fill,
+        R.drawable.filter_fill,
         R.drawable.person_fill1
     )
 
@@ -41,7 +40,7 @@ abstract class ToolbarActivity : AppCompatActivity() {
         FeedActivity::class.java,
         PopularPostsFeedActivity::class.java,
         CreatePostActivity::class.java,
-        SearchActivity::class.java,
+        FavouritesActivity::class.java,
         ProfileActivity::class.java
     )
 
