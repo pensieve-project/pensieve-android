@@ -1,15 +1,9 @@
 package ru.hse.pensieve.feed.repository
 
-import kotlinx.coroutines.Deferred
 import ru.hse.pensieve.api.Client
 import ru.hse.pensieve.feed.route.FeedService
-import ru.hse.pensieve.posts.models.Like
 import ru.hse.pensieve.posts.models.Post
-import ru.hse.pensieve.subscriptions.models.SubscriptionRequest
-import ru.hse.pensieve.subscriptions.route.SubscriptionsService
-import ru.hse.pensieve.themes.route.ThemeService
 import ru.hse.pensieve.themes.models.Theme
-import ru.hse.pensieve.themes.models.ThemeRequest
 import ru.hse.pensieve.utils.UserPreferences
 import java.time.Instant
 import java.util.UUID
@@ -27,6 +21,12 @@ class FeedRepository {
     suspend fun getPopularFeed(): List<Post> {
         val result = feedService.getPopularFeed().await()
         println("Received " + result.size + " posts in feed repo")
+        return result
+    }
+
+    suspend fun getPopularThemes(): List<Theme> {
+        val result = feedService.getPopularThemes().await()
+        println("Received " + result.size + " themes in feed repo")
         return result
     }
 }

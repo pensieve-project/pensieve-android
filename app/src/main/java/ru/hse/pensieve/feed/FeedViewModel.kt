@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import androidx.lifecycle.MutableLiveData
 import ru.hse.pensieve.feed.repository.FeedRepository
 import ru.hse.pensieve.posts.models.Post
+import ru.hse.pensieve.themes.models.Theme
 import java.time.Instant
 
 class FeedViewModel: ViewModel() {
@@ -17,6 +18,9 @@ class FeedViewModel: ViewModel() {
 
     private val _popularPosts = MutableLiveData<List<Post>>()
     val popularPosts: LiveData<List<Post>> get() = _popularPosts
+
+    private val _popularThemes = MutableLiveData<List<Theme>>()
+    val popularThemes: LiveData<List<Theme>> get() = _popularThemes
 
     private var lastSeenTime: Instant? = null
     private var isLoading = false
@@ -53,6 +57,18 @@ class FeedViewModel: ViewModel() {
                 _popularPosts.value = posts
             } catch (e: Exception) {
                 println("Error in getPopularPosts: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun loadPopularThemes() {
+        viewModelScope.launch {
+            try {
+                val themes = feedRepository.getPopularThemes()
+                _popularThemes.value = themes
+            } catch (e: Exception) {
+                println("Error in getPopularThemes: ${e.message}")
                 e.printStackTrace()
             }
         }
