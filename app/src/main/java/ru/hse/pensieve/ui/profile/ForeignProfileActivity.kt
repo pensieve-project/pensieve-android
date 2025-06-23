@@ -1,5 +1,6 @@
 package ru.hse.pensieve.ui.profile
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
@@ -23,7 +24,7 @@ import ru.hse.pensieve.room.entities.User
 import ru.hse.pensieve.ui.albums.AlbumsFragment
 import ru.hse.pensieve.ui.posts_view.PostsOnMapFragment
 
-class ForeignProfileActivity : ToolbarActivity() {
+class ForeignProfileActivity : ToolbarActivity(), ProfileContainer {
     private lateinit var binding: ActivityForeignProfileBinding
     private val profileRepository = ProfileRepository()
     private val subscriptionsRepository = SubscriptionsRepository()
@@ -32,6 +33,9 @@ class ForeignProfileActivity : ToolbarActivity() {
     private lateinit var postsGridFragment: PostsGridFragment
     private lateinit var postsOnMapFragment: PostsOnMapFragment
     private lateinit var albumsFragment: AlbumsFragment
+
+    private enum class ActiveButton { POSTS, LOCATIONS, ALBUMS }
+    private var currentActiveButton = ActiveButton.POSTS
 
     private var isSubscribed = false
 
@@ -46,6 +50,12 @@ class ForeignProfileActivity : ToolbarActivity() {
         userId = UUID.fromString(intent.getStringExtra("USER_ID"))
         println("get " + userId)
 
+        if (userId == UserPreferences.getUserId()!!) {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+            return
+        }
+
         loadProfile(userId)
 
         binding.btnClose.setOnClickListener {
@@ -54,14 +64,17 @@ class ForeignProfileActivity : ToolbarActivity() {
 
         binding.locationsButton.setOnClickListener {
             showMap()
+            setActiveButton(ActiveButton.LOCATIONS)
         }
 
         binding.postsButton.setOnClickListener {
             showGrid()
+            setActiveButton(ActiveButton.POSTS)
         }
 
         binding.albumsButton.setOnClickListener {
             showAlbums()
+            setActiveButton(ActiveButton.ALBUMS)
         }
 
         binding.followersButton.setOnClickListener {
@@ -74,8 +87,8 @@ class ForeignProfileActivity : ToolbarActivity() {
 
         onBackPressedDispatcher.addCallback(this) {
             if (binding.fullscreenContainer.visibility == View.VISIBLE) {
-                binding.mainContent.visibility = View.VISIBLE
-                binding.fullscreenContainer.visibility = View.GONE
+                hideFullscreenContainer()
+                supportFragmentManager.popBackStack()
             } else {
                 finish()
             }
@@ -162,6 +175,25 @@ class ForeignProfileActivity : ToolbarActivity() {
         }
     }
 
+    private fun setActiveButton(button: ActiveButton) {
+        currentActiveButton = button
+
+        binding.postsButton.setImageResource(
+            if (button == ActiveButton.POSTS) R.drawable.grid_3x3_gap_fill
+            else R.drawable.grid_3x3_gap_light
+        )
+
+        binding.locationsButton.setImageResource(
+            if (button == ActiveButton.LOCATIONS) R.drawable.geo_fill
+            else R.drawable.geo_light
+        )
+
+        binding.albumsButton.setImageResource(
+            if (button == ActiveButton.ALBUMS) R.drawable.people_fill
+            else R.drawable.people_light
+        )
+    }
+
     private fun showGrid() {
         postsGridFragment = PostsGridFragment.newInstance("USERS_POSTS", userId)
         supportFragmentManager.beginTransaction()
@@ -196,8 +228,13 @@ class ForeignProfileActivity : ToolbarActivity() {
         showFullscreenContainer()
     }
 
-    fun showFullscreenContainer() {
+    override fun showFullscreenContainer() {
         binding.mainContent.visibility = View.GONE
         binding.fullscreenContainer.visibility = View.VISIBLE
+    }
+
+    override fun hideFullscreenContainer() {
+        binding.mainContent.visibility = View.VISIBLE
+        binding.fullscreenContainer.visibility = View.GONE
     }
 }
