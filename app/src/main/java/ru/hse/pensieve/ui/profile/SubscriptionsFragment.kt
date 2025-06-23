@@ -1,5 +1,7 @@
 package ru.hse.pensieve.ui.profile
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +31,8 @@ class SubscriptionsFragment : Fragment() {
     private val viewModel: SubscriptionsViewModel by activityViewModels()
     private val profileViewModel: ProfileViewModel by activityViewModels()
 
+    private var profileContainer: ProfileContainer? = null
+
     private lateinit var userId: UUID
     private lateinit var subscriptionType: SubscriptionType
 
@@ -37,13 +41,16 @@ class SubscriptionsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSubscriptionsBinding.inflate(inflater, container, false)
-        arguments?.let {
-            userId = it.getSerializable(ARG_USER_ID) as? UUID
-                ?: throw IllegalArgumentException("User ID must be provided and must be UUID")
-            subscriptionType = it.getSerializable(ARG_TYPE) as? SubscriptionType
-                ?: throw IllegalArgumentException("Subscription type must be provided")
-        } ?: throw IllegalArgumentException("Missing arguments")
+        userId = requireArguments().getSerializable(ARG_USER_ID, UUID::class.java)
+            ?: throw IllegalArgumentException("User ID must be provided and must be UUID")
+        subscriptionType = requireArguments().getSerializable(ARG_TYPE, SubscriptionType::class.java)
+            ?: throw IllegalArgumentException("Subscription type must be provided")
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        profileContainer = context as? ProfileContainer
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +65,14 @@ class SubscriptionsFragment : Fragment() {
         val getUsername: (User) -> String = { user -> usernameCache[user.userId] ?: "unknown" }
         val getUserAvatar: (User) -> ByteArray? = { user -> avatarsCache[user.userId] }
 
-        adapter = UsersAdapter(emptyList(), {/*переход*/}, false, getUsername, getUserAvatar)
+        adapter = UsersAdapter(emptyList(), { selectedUsers ->
+            val user = selectedUsers.lastOrNull()
+            if (user != null) {
+                val intent = Intent(requireContext(), ForeignProfileActivity::class.java)
+                intent.putExtra("USER_ID", user.userId.toString())
+                startActivity(intent)
+            }
+        }, false, getUsername, getUserAvatar)
 
         binding.usersRecyclerView.adapter = adapter
 
@@ -96,14 +110,19 @@ class SubscriptionsFragment : Fragment() {
 
     private fun setupButtons() {
         binding.btnBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
-            (activity as? ProfileActivity)?.hideFullscreenContainer()
+            profileContainer?.hideFullscreenContainer()
+            parentFragmentManager.popBackStack()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        profileContainer = null
+        super.onDetach()
     }
 
     companion object {
